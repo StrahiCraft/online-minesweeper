@@ -3,6 +3,6 @@ module com.example.onlineminesweeper {
     requires javafx.fxml;
 
 
-    opens com.example.onlineminesweeper to javafx.fxml;
-    exports com.example.onlineminesweeper;
+    opens client to javafx.fxml;
+    exports client;
 }

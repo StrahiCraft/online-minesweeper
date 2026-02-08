@@ -1,9 +1,9 @@
-package com.example.onlineminesweeper;
+package client;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-public class HelloController {
+public class ClientController {
     @FXML
     private Label welcomeText;
 
