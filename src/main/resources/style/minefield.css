@@ -1,11 +1,22 @@
-.undiscovered-field{
+.base-field{
+    -fx-min-width: 32px;
+    -fx-min-height: 32px;
 
+    -fx-max-width: 32px;
+    -fx-max-height: 32px;
+
+    -fx-background-radius: 0;
+    -fx-background-size: stretch;
 }
 
-.marked-mine{
-
+.undiscovered-field{
+    -fx-background-image: url("/undiscovered.png") ;
 }
 
 .empty-field{
+    -fx-background-image: url("/empty.png");
+}
 
+.marked-field{
+    -fx-background-image: url("/marked.jpg");
 }

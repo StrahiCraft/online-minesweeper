@@ -14,6 +14,10 @@ public class EmptyField extends Field {
 
     @Override
     protected void onFieldDiscovered() {
+        fieldGraphics.getStyleClass().remove("undiscovered-field");
+        // TODO set different class depending on surrounding mines
+        fieldGraphics.getStyleClass().add("empty-field");
 
+        // TODO Discover all neighbours if surrounding mine count is 0
     }
 }

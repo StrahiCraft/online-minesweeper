@@ -27,11 +27,19 @@ public abstract class Field {
      */
     protected Button fieldGraphics;
 
+    /**
+     * Default field constructor, sets field position to (0, 0).
+     */
     public Field() {
         position = Vector2Int.zero();
         setupFieldButton();
     }
 
+    /**
+     * Creates a field with a specified position.
+     * @param position
+     * Position of the field
+     */
     public Field(Vector2Int position) {
         this.position = position;
         setupFieldButton();
@@ -42,6 +50,10 @@ public abstract class Field {
      */
     private void setupFieldButton(){
         fieldGraphics = new Button();
+
+        fieldGraphics.getStyleClass().add("base-field");
+        fieldGraphics.getStyleClass().add("undiscovered-field");
+
         fieldGraphics.setOnMouseClicked(event -> {
             if(event.getButton() == MouseButton.PRIMARY){
                 discoverField();
@@ -67,9 +79,6 @@ public abstract class Field {
 
         undiscovered = false;
 
-        System.out.println("Field discovered");
-        // TODO change field to discovered style class
-
         onFieldDiscovered();
     }
 
@@ -82,13 +91,19 @@ public abstract class Field {
         }
 
         marked = !marked;
-        System.out.println("Field toggle marked " + marked);
 
-        // TODO change field to marked style class
+        if(marked){
+            fieldGraphics.getStyleClass().add("marked-field");
+            fieldGraphics.getStyleClass().remove("undiscovered-field");
+            return;
+        }
+        fieldGraphics.getStyleClass().remove("marked-field");
+        fieldGraphics.getStyleClass().add("undiscovered-field");
     }
 
     /**
-     * Uncovering functionality, different for every derived class.
+     * Uncovering functionality, different for every derived class. Always implement a CSS class change
+     * to the proper CSS class when implementing this function.
      */
     protected abstract void onFieldDiscovered();
 
