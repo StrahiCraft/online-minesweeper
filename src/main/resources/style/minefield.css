@@ -1,9 +1,9 @@
 .base-field{
-    -fx-min-width: 32px;
-    -fx-min-height: 32px;
+    -fx-min-width: 20px;
+    -fx-min-height: 20px;
 
-    -fx-max-width: 32px;
-    -fx-max-height: 32px;
+    -fx-max-width: 20px;
+    -fx-max-height: 20px;
 
     -fx-background-radius: 0;
     -fx-background-size: stretch;
