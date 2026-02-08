@@ -1,11 +1,9 @@
 package client.rendering;
 
-import game.Minefield;
+import game.minefield.Minefield;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
-
-import java.util.ArrayList;
+import utility.customTypes.Vector2Int;
 
 /**
  * Class used for rendering the minefield.
@@ -23,8 +21,7 @@ public class MinefieldRenderer {
 
         for(int x = 0; x < minefield.getDimensions().getX(); x++){
             for(int y = 0; y < minefield.getDimensions().getY(); y++){
-                // TODO change this so it uses actual minefield data
-                minefieldRender.add(new Button(), x, y);
+                minefieldRender.add(minefield.getFieldAt(new Vector2Int(x, y)).getFieldGraphics(), x, y);
             }
         }
 
