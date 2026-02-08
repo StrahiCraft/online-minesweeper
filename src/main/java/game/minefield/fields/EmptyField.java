@@ -13,12 +13,7 @@ public class EmptyField extends Field {
     }
 
     @Override
-    protected void onFieldUndiscovered() {
+    protected void onFieldDiscovered() {
 
-    }
-
-    @Override
-    protected Button getDiscoveredGraphics() {
-        return new Button();
     }
 }

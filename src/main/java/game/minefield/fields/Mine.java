@@ -13,12 +13,7 @@ public class Mine extends Field{
     }
 
     @Override
-    protected void onFieldUndiscovered() {
+    protected void onFieldDiscovered() {
         // TODO lose game
-    }
-
-    @Override
-    protected Button getDiscoveredGraphics() {
-        return new Button();
     }
 }

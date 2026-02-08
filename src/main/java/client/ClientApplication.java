@@ -11,7 +11,17 @@ import utility.customTypes.Vector2Int;
 
 import java.io.IOException;
 
+/**
+ * Class for the client application. Each player runs this as their client.
+ */
 public class ClientApplication extends Application {
+
+    /**
+     * Default start function for the client program
+     * @param stage
+     * The client's window.
+     * @throws IOException
+     */
     @Override
     public void start(Stage stage) throws IOException {
         VBox root = new VBox();
