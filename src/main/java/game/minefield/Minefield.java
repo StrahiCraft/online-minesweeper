@@ -42,6 +42,14 @@ public class Minefield {
         return getFieldAt(new Vector2Int(x, y));
     }
 
+    public void setFieldAt(Vector2Int position, Field field) {
+        setFieldAt(position.getX() * dimensions.getY() +  position.getY(), field);
+    }
+
+    public void setFieldAt(int index, Field field) {
+        minefield[index] = field;
+    }
+
     public Field getFieldAt(Vector2Int position) {
         return minefield[position.getX() * dimensions.getY() + position.getY()];
     }

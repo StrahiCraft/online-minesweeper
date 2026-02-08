@@ -14,6 +14,8 @@ public class Mine extends Field{
 
     @Override
     protected void onFieldDiscovered() {
+        fieldGraphics.getStyleClass().remove("undiscovered-field");
+        fieldGraphics.getStyleClass().add("mine");
         // TODO lose game
     }
 }

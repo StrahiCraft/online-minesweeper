@@ -18,5 +18,9 @@
 }
 
 .marked-field{
-    -fx-background-image: url("/marked.jpg");
+    -fx-background-image: url("/marked.png");
+}
+
+.mine{
+    -fx-background-image: url("/mine.png");
 }
