@@ -17,6 +17,38 @@
     -fx-background-image: url("/empty.png");
 }
 
+.one-mine{
+    -fx-background-image: url("/one.png");
+}
+
+.two-mines{
+    -fx-background-image: url("/two.png");
+}
+
+.three-mines{
+    -fx-background-image: url("/three.png");
+}
+
+.four-mines{
+    -fx-background-image: url("/four.png");
+}
+
+.five-mines{
+    -fx-background-image: url("/five.png");
+}
+
+.six-mines{
+    -fx-background-image: url("/six.png");
+}
+
+.seven-mines{
+    -fx-background-image: url("/seven.png");
+}
+
+.eight-mines{
+    -fx-background-image: url("/eight.png");
+}
+
 .marked-field{
     -fx-background-image: url("/marked.png");
 }

@@ -1,23 +1,26 @@
 package game.minefield;
 
 import game.minefield.fields.Field;
+import game.minefield.fields.Mine;
 import utility.customTypes.Vector2Int;
+
+import java.util.HashMap;
 
 public class Minefield {
     private Vector2Int dimensions;
-    private Field[] minefield;
+    private HashMap<String, Field> minefield;
 
     public Minefield() {
         dimensions = new Vector2Int(16, 16);
-        minefield = new Field[256];
+        minefield = new HashMap<>();
     }
 
     public Minefield(Vector2Int dimensions) {
         this.dimensions = dimensions;
-        minefield = new Field[dimensions.getX() * dimensions.getY()];
+        minefield = new HashMap<>();
     }
 
-    public Minefield(Vector2Int dimensions,Field[] minefield) {
+    public Minefield(Vector2Int dimensions, HashMap<String, Field> minefield) {
         this.dimensions = dimensions;
         this.minefield = minefield;
     }
@@ -30,11 +33,11 @@ public class Minefield {
         this.dimensions = dimensions;
     }
 
-    public Field[] getMinefield() {
+    public HashMap<String, Field> getMinefield() {
         return minefield;
     }
 
-    public void setMinefield(Field[] minefield) {
+    public void setMinefield(HashMap<String, Field> minefield) {
         this.minefield = minefield;
     }
 
@@ -43,14 +46,17 @@ public class Minefield {
     }
 
     public void setFieldAt(Vector2Int position, Field field) {
-        setFieldAt(position.getX() * dimensions.getY() +  position.getY(), field);
-    }
-
-    public void setFieldAt(int index, Field field) {
-        minefield[index] = field;
+        minefield.put(position.toString(), field);
     }
 
     public Field getFieldAt(Vector2Int position) {
-        return minefield[position.getX() * dimensions.getY() + position.getY()];
+        return minefield.get(position.toString());
+    }
+
+    public boolean isMineAt(Vector2Int position) {
+        if(!minefield.containsKey(position.toString())) {
+            return false;
+        }
+        return minefield.get(position.toString()).getClass() == Mine.class;
     }
 }

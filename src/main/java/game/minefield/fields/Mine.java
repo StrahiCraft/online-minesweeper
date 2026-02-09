@@ -5,7 +5,7 @@ import utility.customTypes.Vector2Int;
 
 public class Mine extends Field{
     public Mine() {
-
+        super();
     }
 
     public Mine(Vector2Int position) {

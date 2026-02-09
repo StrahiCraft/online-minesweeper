@@ -114,4 +114,8 @@ public abstract class Field {
     public Button getFieldGraphics(){
         return fieldGraphics;
     }
+
+    public Vector2Int getPosition() {
+        return position;
+    }
 }

@@ -2,7 +2,6 @@ package client;
 
 import client.rendering.MinefieldRenderer;
 import game.minefield.MineFieldGenerator;
-import game.minefield.Minefield;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
@@ -26,7 +25,7 @@ public class ClientApplication extends Application {
     public void start(Stage stage) throws IOException {
         VBox root = new VBox();
 
-        root.getChildren().add(MinefieldRenderer.renderMinefield(MineFieldGenerator.generateMinefield(new Vector2Int(32, 32), 64)));
+        root.getChildren().add(MinefieldRenderer.renderMinefield(MineFieldGenerator.generateMinefield(new Vector2Int(32, 32), 256)));
 
         Scene scene = new Scene(root, 1280, 720);
         stage.setTitle("Online Minesweeper");
