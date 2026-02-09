@@ -1,14 +1,9 @@
 package client;
 
-import client.rendering.MinefieldRenderer;
 import client.scene.SceneFactory;
 import client.scene.SceneManager;
-import game.minefield.MineFieldGenerator;
 import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import utility.customTypes.Vector2Int;
 
 import java.io.IOException;
 

@@ -17,50 +17,95 @@ public class Minefield {
      */
     private HashMap<String, Field> minefield;
 
+    /**
+     * Default minefield constructor, sets the dimensions to 16x16.
+     */
     public Minefield() {
         dimensions = new Vector2Int(16, 16);
         minefield = new HashMap<>();
         GameManager.setMinefield(this);
     }
 
+    /**
+     * Minefield constructor with specified dimensions.
+     * @param dimensions
+     * The dimensions of the minefield
+     */
     public Minefield(Vector2Int dimensions) {
         this.dimensions = dimensions;
         minefield = new HashMap<>();
         GameManager.setMinefield(this);
     }
 
+    /**
+     * Constructor for an already generated minefield, called when starting a new game.
+     * @param dimensions
+     * The dimensions of the minefiel
+     * @param minefield
+     * The generated minefield
+     */
     public Minefield(Vector2Int dimensions, HashMap<String, Field> minefield) {
         this.dimensions = dimensions;
         this.minefield = minefield;
         GameManager.setMinefield(this);
     }
 
+    /**
+     * Returns the dimensions of the minefield
+     * @return
+     * Dimensions of the minefield
+     */
     public Vector2Int getDimensions() {
         return dimensions;
     }
 
+    /**
+     * Sets the dimensions of the minefield
+     * @param dimensions
+     * New dimensions of the minefield
+     */
     public void setDimensions(Vector2Int dimensions) {
         this.dimensions = dimensions;
     }
 
+    /**
+     * Returns the current minefield
+     * @return
+     * The current minefield
+     */
     public HashMap<String, Field> getMinefield() {
         return minefield;
     }
 
+    /**
+     * Sets the current minefield
+     * @param minefield
+     * New minefield to replace the current one
+     */
     public void setMinefield(HashMap<String, Field> minefield) {
         this.minefield = minefield;
     }
 
-    public Field getFieldAt(int x, int y) {
-        return getFieldAt(new Vector2Int(x, y));
-    }
-
-    public void setFieldAt(Vector2Int position, Field field) {
-        minefield.put(position.toString(), field);
-    }
-
+    /**
+     * Returns the field of the specified position
+     * @param position
+     * Position of the field
+     * @return
+     * The field with the specified position
+     */
     public Field getFieldAt(Vector2Int position) {
         return minefield.get(position.toString());
+    }
+
+    /**
+     * Sets the field at the chosen position to a specific field
+     * @param position
+     * The position of the field that is being changed
+     * @param field
+     * The new field being set to the position
+     */
+    public void setFieldAt(Vector2Int position, Field field) {
+        minefield.put(position.toString(), field);
     }
 
     /**

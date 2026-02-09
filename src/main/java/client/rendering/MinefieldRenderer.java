@@ -1,7 +1,6 @@
 package client.rendering;
 
 import game.minefield.Minefield;
-import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import utility.customTypes.Vector2Int;
 

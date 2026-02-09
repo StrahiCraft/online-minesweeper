@@ -2,7 +2,6 @@ package client.scene;
 
 import client.rendering.MinefieldRenderer;
 import game.GameManager;
-import game.minefield.MineFieldGenerator;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -58,6 +57,11 @@ public class SceneFactory {
         return new Scene(root, resolution.getX(), resolution.getY());
     }
 
+    /**
+     * Creates an instance of the join scene. The join scene is used to join other player's games.
+     * @return
+     * An instance of the created scene
+     */
     public static Scene getJoinScene() {
         VBox root = new VBox();
 
@@ -82,6 +86,12 @@ public class SceneFactory {
         return new Scene(root, resolution.getX(), resolution.getY());
     }
 
+    /**
+     * Creates an instance of the host scene. The host scene is used to host games so other players can
+     * join and play with the host.
+     * @return
+     * An instance of the created scene
+     */
     public static Scene getHostScene() {
         VBox root = new VBox();
 
@@ -154,6 +164,11 @@ public class SceneFactory {
         return new Scene(root, resolution.getX(), resolution.getY());
     }
 
+    /**
+     * Creates an instance of the game scene, this is where the minesweeper gameplay happens.
+     * @return
+     * An instance of the created scene
+     */
     public static Scene getGameScene() {
         VBox root = new VBox();
 
