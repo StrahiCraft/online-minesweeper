@@ -25,7 +25,7 @@ public class ClientApplication extends Application {
     public void start(Stage stage) throws IOException {
         VBox root = new VBox();
 
-        root.getChildren().add(MinefieldRenderer.renderMinefield(MineFieldGenerator.generateMinefield(new Vector2Int(32, 32), 256)));
+        root.getChildren().add(MinefieldRenderer.renderMinefield(MineFieldGenerator.generateMinefield(new Vector2Int(32, 32), 64)));
 
         Scene scene = new Scene(root, 1280, 720);
         stage.setTitle("Online Minesweeper");

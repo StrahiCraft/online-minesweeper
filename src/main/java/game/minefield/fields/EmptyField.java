@@ -1,5 +1,6 @@
 package game.minefield.fields;
 
+import game.GameManager;
 import javafx.scene.control.Button;
 import utility.customTypes.Vector2Int;
 
@@ -20,6 +21,7 @@ public class EmptyField extends Field {
         switch (surroundingMinesCount){
             case 0:
                 fieldGraphics.getStyleClass().add("empty-field");
+                GameManager.getMinefield().discoverSurroundingFields(getPosition());
                 break;
             case 1:
                 fieldGraphics.getStyleClass().add("one-mine");
@@ -46,8 +48,6 @@ public class EmptyField extends Field {
                 fieldGraphics.getStyleClass().add("eight-mines");
                 break;
         }
-
-        // TODO Discover all neighbours if surrounding mine count is 0
     }
 
     public int getSurroundingMinesCount() {
