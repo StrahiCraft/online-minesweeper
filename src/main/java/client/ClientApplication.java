@@ -1,6 +1,8 @@
 package client;
 
 import client.rendering.MinefieldRenderer;
+import client.scene.SceneFactory;
+import client.scene.SceneManager;
 import game.minefield.MineFieldGenerator;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -16,26 +18,24 @@ import java.io.IOException;
 public class ClientApplication extends Application {
 
     /**
-     * Default start function for the client program
+     * Default start function for the client program.
      * @param stage
      * The client's window.
      * @throws IOException
      */
     @Override
     public void start(Stage stage) throws IOException {
-        VBox root = new VBox();
+        SceneManager.setStage(stage);
 
-        root.getChildren().add(MinefieldRenderer.renderMinefield(MineFieldGenerator.generateMinefield(new Vector2Int(32, 32), 64)));
-
-        Scene scene = new Scene(root, 1280, 720);
         stage.setTitle("Online Minesweeper");
-        scene.getStylesheets().add(
-                getClass().getResource("/style/minefield.css").toExternalForm()
-        );
-        stage.setScene(scene);
+        stage.setScene(SceneFactory.getMainMenuScene());
         stage.show();
     }
 
+    /**
+     * The main method from which the game starts.
+     * @param args
+     */
     public static void main(String[] args) {
         launch();
     }
