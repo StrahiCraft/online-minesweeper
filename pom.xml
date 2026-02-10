@@ -39,13 +39,17 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Source: https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
+        <!-- Source: https://mvnrepository.com/artifact/org.hibernate.orm/hibernate-core -->
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>7.2.4.Final</version>
-            <type>pom</type>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.33</version>
         </dependency>
     </dependencies>
 
