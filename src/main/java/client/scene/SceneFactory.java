@@ -4,10 +4,7 @@ import client.rendering.MinefieldRenderer;
 import game.GameManager;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import utility.customTypes.Vector2Int;
@@ -20,6 +17,75 @@ public class SceneFactory {
      * The resolution of the window
      */
     private static final Vector2Int resolution = new Vector2Int(1280, 720);
+
+    /**
+     * Creates an instance of the login screen. This is the first scene loaded, the user can also choose to register if
+     * they don't have an account from here.
+     * @return
+     * An instance of the created scene
+     */
+    public static Scene getLoginScene() {
+        VBox root = new VBox();
+
+        Label title = new Label("Login");
+
+        TextField username = new TextField();
+        username.setPromptText("Username");
+        PasswordField password = new PasswordField();
+        password.setPromptText("Password");
+
+        Button login = new Button("Login");
+        Button register = new Button("Don't have an account? Register here!");
+
+        login.setOnMouseClicked(event -> {
+            // TODO try to log in to an existing account
+        });
+        register.setOnMouseClicked(event -> {
+            SceneManager.changeScene(SceneType.REGISTER);
+        });
+
+        root.getChildren().addAll(title, username, password, login, register);
+        root.setSpacing(10);
+        root.setAlignment(Pos.CENTER);
+
+        return new Scene(root, resolution.getX(), resolution.getY());
+    }
+
+    /**
+     * Creates an instance of the registration screen. New users can create accounts from here, or log in to an existing
+     * one
+     * @return
+     * An instance of the created scene
+     */
+    public static Scene getRegisterScene() {
+        VBox root = new VBox();
+
+        Label title = new Label("Register");
+
+        TextField username = new TextField();
+        username.setPromptText("Username");
+        PasswordField password = new PasswordField();
+        password.setPromptText("Password");
+        PasswordField confirmPassword = new PasswordField();
+        confirmPassword.setPromptText("Confirm Password");
+
+        Button register = new Button("Register");
+        Button backToLogin = new Button("Back to login screen");
+
+        register.setOnMouseClicked(event -> {
+            // TODO try to register an account
+        });
+        backToLogin.setOnMouseClicked(event -> {
+            SceneManager.changeScene(SceneType.LOGIN);
+        });
+
+        root.getChildren().addAll(title, username, password, confirmPassword, register, backToLogin);
+        root.setSpacing(10);
+        root.setAlignment(Pos.CENTER);
+
+        return new Scene(root, resolution.getX(), resolution.getY());
+    }
+
 
     /**
      * Creates an instance of the main menu scene. This scene can either go to the host game scene or the join
@@ -157,7 +223,6 @@ public class SceneFactory {
         });
 
         root.getChildren().addAll(title, hostnameHBox, errorLabel, gameSettingsHBox, playerList, startGameButton, backButton);
-
         root.setSpacing(10);
         root.setAlignment(Pos.CENTER);
 
@@ -173,6 +238,8 @@ public class SceneFactory {
         VBox root = new VBox();
 
         root.getChildren().add(MinefieldRenderer.renderMinefield(GameManager.getMinefield()));
+        root.setSpacing(10);
+        root.setAlignment(Pos.CENTER);
 
         Scene game = new Scene(root, resolution.getX(), resolution.getY());
         game.getStylesheets().add(

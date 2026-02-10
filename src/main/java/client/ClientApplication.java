@@ -23,7 +23,7 @@ public class ClientApplication extends Application {
         SceneManager.setStage(stage);
 
         stage.setTitle("Online Minesweeper");
-        stage.setScene(SceneFactory.getMainMenuScene());
+        stage.setScene(SceneFactory.getLoginScene());
         stage.show();
     }
 

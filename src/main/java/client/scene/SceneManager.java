@@ -27,6 +27,12 @@ public class SceneManager {
      */
     public static void changeScene(SceneType sceneType) {
         switch (sceneType) {
+            case LOGIN:
+                mainStage.setScene(SceneFactory.getLoginScene());
+                break;
+            case REGISTER:
+                mainStage.setScene(SceneFactory.getRegisterScene());
+                break;
             case MAIN_MENU:
                 mainStage.setScene(SceneFactory.getMainMenuScene());
                 break;
