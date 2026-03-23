@@ -4,6 +4,7 @@ import client.scene.SceneFactory;
 import client.scene.SceneManager;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import server.database.DatabaseManager;
 
 import java.io.IOException;
 
@@ -20,6 +21,7 @@ public class ClientApplication extends Application {
      */
     @Override
     public void start(Stage stage) throws IOException {
+        DatabaseManager.connect();
         SceneManager.setStage(stage);
 
         stage.setTitle("Online Minesweeper");
