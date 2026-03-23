@@ -1,10 +1,6 @@
 package server.database;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.ArrayList;
+import java.sql.*;
 
 /**
  * Class for managing the database
@@ -55,11 +51,18 @@ public class DatabaseManager {
         }
     }
 
-    public static ResultSet getDataFromQuery(String query){
+    public static ResultSet executeQuery(String query){
+        return executeQuery(query, new String[0]);
+    }
+
+    public static ResultSet executeQuery(String query, String[] parameters){
         ResultSet resultSet = null;
         try {
-            Statement statement = connection.createStatement();
-            resultSet = statement.executeQuery(query);
+            PreparedStatement statement = connection.prepareStatement(query);
+            for (int i = 0; i < parameters.length; i++){
+                statement.setString(i + 1, parameters[i]);
+            }
+            resultSet = statement.executeQuery();
         }
         catch (Exception e){
             e.printStackTrace();

@@ -4,8 +4,8 @@ import java.sql.ResultSet;
 
 public class AccountValidation {
     public static boolean validLogin(String username, String password){
-        ResultSet resultSet = DatabaseManager.getDataFromQuery("SELECT * FROM Player WHERE username = '" + username + "' AND " +
-                "password = '"  + password + "'");
+        String[] parameters = { username, password };
+        ResultSet resultSet = DatabaseManager.executeQuery("SELECT * FROM Player WHERE username = ? AND password = ?", parameters);
         boolean loginValid = false;
 
         try{
