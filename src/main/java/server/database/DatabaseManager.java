@@ -58,7 +58,9 @@ public class DatabaseManager {
     public static ResultSet executeQuery(String query, String[] parameters){
         ResultSet resultSet = null;
         try {
-            PreparedStatement statement = connection.prepareStatement(query);
+            PreparedStatement statement = connection.prepareStatement(query,
+                    ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
             for (int i = 0; i < parameters.length; i++){
                 statement.setString(i + 1, parameters[i]);
             }
@@ -68,5 +70,22 @@ public class DatabaseManager {
             e.printStackTrace();
         }
         return resultSet;
+    }
+
+    public static void executeUpdate(String query){
+        executeUpdate(query, new String[0]);
+    }
+
+    public static void executeUpdate(String query, String[] parameters){
+        try {
+            PreparedStatement statement = connection.prepareStatement(query);
+            for (int i = 0; i < parameters.length; i++){
+                statement.setString(i + 1, parameters[i]);
+            }
+            statement.executeUpdate();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

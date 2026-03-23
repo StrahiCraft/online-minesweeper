@@ -21,6 +21,24 @@ public class AccountValidation {
     }
 
     public static boolean validRegistration(String username, String password){
-        return true;
+        String[] parameters = { username };
+        ResultSet resultSet = DatabaseManager.executeQuery("SELECT * FROM Player WHERE username = ?", parameters);
+        boolean registrationValid = true;
+
+        try{
+            if (resultSet.next()){
+                registrationValid = false;
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+        if(registrationValid){
+            String[] newAccountParameters = { username, password };
+            DatabaseManager.executeUpdate("INSERT INTO Player (username, password) VALUES(?, ?)", newAccountParameters);
+        }
+
+        return registrationValid;
     }
 }

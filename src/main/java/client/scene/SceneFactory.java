@@ -41,9 +41,12 @@ public class SceneFactory {
         login.setOnMouseClicked(event -> {
             if(AccountValidation.validLogin(username.getText(), password.getText())){
                 System.out.println("Login successful!");
+                // TODO set current user
+                SceneManager.changeScene(SceneType.MAIN_MENU);
             }
             else {
                 System.out.println("User not found!");
+                // TODO add some kind of error message
             }
         });
         register.setOnMouseClicked(event -> {
@@ -79,7 +82,13 @@ public class SceneFactory {
         Button backToLogin = new Button("Back to login screen");
 
         register.setOnMouseClicked(event -> {
-            // TODO try to register an account
+            if(AccountValidation.validRegistration(username.getText(), password.getText())){
+                System.out.println("Registration successful!");
+                SceneManager.changeScene(SceneType.MAIN_MENU);
+            }
+            else {
+                System.out.println("Invalid credentials!");
+            }
         });
         backToLogin.setOnMouseClicked(event -> {
             SceneManager.changeScene(SceneType.LOGIN);
