@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import server.database.AccountValidation;
 import utility.customTypes.Vector2Int;
 
 /**
@@ -38,7 +39,12 @@ public class SceneFactory {
         Button register = new Button("Don't have an account? Register here!");
 
         login.setOnMouseClicked(event -> {
-            // TODO try to log in to an existing account
+            if(AccountValidation.validLogin(username.getText(), password.getText())){
+                System.out.println("Login successful!");
+            }
+            else {
+                System.out.println("User not found!");
+            }
         });
         register.setOnMouseClicked(event -> {
             SceneManager.changeScene(SceneType.REGISTER);
