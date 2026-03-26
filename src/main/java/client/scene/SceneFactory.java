@@ -19,6 +19,23 @@ public class SceneFactory {
      */
     private static final Vector2Int resolution = new Vector2Int(1280, 720);
 
+    public static Scene getConnectionFailedScene(){
+        VBox root = new VBox();
+
+        Label title = new Label("Connection to server failed");
+
+        Button quitGameButton = new Button("Quit Game");
+        quitGameButton.setOnMouseClicked(event -> {
+            System.exit(0);
+        });
+
+        root.getChildren().addAll(title, quitGameButton);
+        root.setSpacing(10);
+        root.setAlignment(Pos.CENTER);
+
+        return new Scene(root, resolution.getX(), resolution.getY());
+    }
+
     /**
      * Creates an instance of the login screen. This is the first scene loaded, the user can also choose to register if
      * they don't have an account from here.
@@ -38,6 +55,11 @@ public class SceneFactory {
         Button login = new Button("Login");
         Button register = new Button("Don't have an account? Register here!");
 
+        Button quitGameButton = new Button("Quit Game");
+        quitGameButton.setOnMouseClicked(event -> {
+            System.exit(0);
+        });
+
         login.setOnMouseClicked(event -> {
             if(AccountValidation.validLogin(username.getText(), password.getText())){
                 System.out.println("Login successful!");
@@ -53,7 +75,7 @@ public class SceneFactory {
             SceneManager.changeScene(SceneType.REGISTER);
         });
 
-        root.getChildren().addAll(title, username, password, login, register);
+        root.getChildren().addAll(title, username, password, login, register, quitGameButton);
         root.setSpacing(10);
         root.setAlignment(Pos.CENTER);
 
@@ -81,6 +103,11 @@ public class SceneFactory {
         Button register = new Button("Register");
         Button backToLogin = new Button("Back to login screen");
 
+        Button quitGameButton = new Button("Quit Game");
+        quitGameButton.setOnMouseClicked(event -> {
+            System.exit(0);
+        });
+
         register.setOnMouseClicked(event -> {
             if(AccountValidation.validRegistration(username.getText(), password.getText())){
                 System.out.println("Registration successful!");
@@ -94,7 +121,7 @@ public class SceneFactory {
             SceneManager.changeScene(SceneType.LOGIN);
         });
 
-        root.getChildren().addAll(title, username, password, confirmPassword, register, backToLogin);
+        root.getChildren().addAll(title, username, password, confirmPassword, register, backToLogin, quitGameButton);
         root.setSpacing(10);
         root.setAlignment(Pos.CENTER);
 

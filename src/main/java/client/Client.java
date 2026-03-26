@@ -1,5 +1,9 @@
 package client;
 
+import client.scene.SceneManager;
+import client.scene.SceneType;
+import javafx.application.Platform;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -21,6 +25,10 @@ public class Client extends Thread {
     private final int PORT = 25655;
 
     private String playerName;
+    /**
+     * False if the server is offline or connection failed
+     */
+    private boolean connectionSuccessful = false;
 
     public Client() {
         try{
@@ -31,7 +39,7 @@ public class Client extends Thread {
         }
     }
 
-    public void connectionSuccessful(){
+    public void attemptConnectionToServer(){
         try{
             BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
@@ -39,19 +47,30 @@ public class Client extends Thread {
             output.println("Trying to connect client");
 
             System.out.println(input.readLine());
+
+            connectionSuccessful = true;
         }
         catch (Exception e){
             System.out.println("Connection failed...");
+        }
+        finally {
+            if(connectionSuccessful){
+                Platform.runLater(() -> SceneManager.changeScene(SceneType.LOGIN));
+            }
         }
     }
 
     @Override
     public void run() {
         try {
-            connectionSuccessful();
+            attemptConnectionToServer();
         }
         catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    public boolean getConnectionSuccessful(){
+        return connectionSuccessful;
     }
 }
