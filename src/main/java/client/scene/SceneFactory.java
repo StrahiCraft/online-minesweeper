@@ -63,7 +63,6 @@ public class SceneFactory {
         });
 
         login.setOnMouseClicked(event -> {
-            System.out.println("Login clicked");
             String[] loginData = { username.getText(), password.getText() };
             ClientApplication.getClientInstance().sendMessage(ServerMessageType.LOGIN, loginData);
         });

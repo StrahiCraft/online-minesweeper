@@ -135,13 +135,17 @@ public class Client extends Thread {
                     switch (receivedMessage.getMessageType()){
                         case REGISTER_SUCCESS:
                         case LOGIN_SUCCESS:
+                            playerName = (String) receivedMessage.getMessageData();
                             Platform.runLater(() -> SceneManager.changeScene(SceneType.MAIN_MENU));
+                            System.out.println("Player name: " + playerName);
                             break;
                         case REGISTER_FAIL:
                             // TODO set register failed message
                             break;
                         case LOGIN_FAIL:
                             // TODO set login failed message
+                            break;
+                        default:
                             break;
                     }
 

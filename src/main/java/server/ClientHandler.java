@@ -96,7 +96,7 @@ public class ClientHandler extends Thread {
 
                         if(AccountValidation.validRegistration(registerData[0], registerData[1])){
                             DatabaseManager.executeUpdate("INSERT INTO Player(`username`, `password`) VALUES (?, ?)", registerData);
-                            sendMessage(ServerMessageType.REGISTER_SUCCESS);
+                            sendMessage(ServerMessageType.REGISTER_SUCCESS, registerData[0]);
                         }
                         else {
                             sendMessage(ServerMessageType.REGISTER_FAIL);
@@ -107,11 +107,13 @@ public class ClientHandler extends Thread {
                         String[] loginData = (String[]) clientMessage.getMessageData();
 
                         if(AccountValidation.validLogin(loginData[0], loginData[1])){
-                            sendMessage(ServerMessageType.LOGIN_SUCCESS);
+                            sendMessage(ServerMessageType.LOGIN_SUCCESS, loginData[0]);
                         }
                         else {
                             sendMessage(ServerMessageType.LOGIN_FAIL);
                         }
+                        break;
+                    default:
                         break;
                 }
             }
