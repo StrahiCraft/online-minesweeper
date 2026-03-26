@@ -1,5 +1,6 @@
 package client.scene;
 
+import client.ClientApplication;
 import javafx.stage.Stage;
 
 /**
@@ -52,5 +53,10 @@ public class SceneManager {
                 // TODO add some exception to notify that something has gone wrong
                 break;
         }
+    }
+
+    public static void close(){
+        ClientApplication.getClientInstance().onGameClosed();
+        mainStage.close();
     }
 }

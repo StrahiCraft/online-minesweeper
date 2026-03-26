@@ -30,10 +30,12 @@ public class ClientApplication extends Application {
         client.start();
 
         stage.setTitle("Online Minesweeper");
+        stage.setOnCloseRequest((gameCloseEvent) -> client.onGameClosed());
         SceneManager.setStage(stage);
 
         stage.setScene(SceneFactory.getConnectionFailedScene());
         stage.show();
+
     }
 
     /**

@@ -26,7 +26,7 @@ public class SceneFactory {
 
         Button quitGameButton = new Button("Quit Game");
         quitGameButton.setOnMouseClicked(event -> {
-            System.exit(0);
+            SceneManager.close();
         });
 
         root.getChildren().addAll(title, quitGameButton);
@@ -57,7 +57,7 @@ public class SceneFactory {
 
         Button quitGameButton = new Button("Quit Game");
         quitGameButton.setOnMouseClicked(event -> {
-            System.exit(0);
+            SceneManager.close();
         });
 
         login.setOnMouseClicked(event -> {
@@ -105,7 +105,7 @@ public class SceneFactory {
 
         Button quitGameButton = new Button("Quit Game");
         quitGameButton.setOnMouseClicked(event -> {
-            System.exit(0);
+            SceneManager.close();
         });
 
         register.setOnMouseClicked(event -> {
@@ -155,7 +155,7 @@ public class SceneFactory {
 
         });
         quitGameButton.setOnMouseClicked(event -> {
-            System.exit(0);
+            SceneManager.close();
         });
 
         root.getChildren().addAll(title, hostGameButton, joinGameButton, statisticsButton, quitGameButton);
