@@ -13,6 +13,8 @@ import java.io.IOException;
  */
 public class ClientApplication extends Application {
 
+    private static Client client;
+
     /**
      * Default start function for the client program.
      * @param stage
@@ -21,7 +23,8 @@ public class ClientApplication extends Application {
      */
     @Override
     public void start(Stage stage) throws IOException {
-        DatabaseManager.connect();
+        client = new Client();
+        client.start();
         SceneManager.setStage(stage);
 
         stage.setTitle("Online Minesweeper");

@@ -30,7 +30,6 @@ public class DatabaseManager {
      */
     public static void connect(){
         try {
-            Class.forName("com.mysql.jdbc.Driver");
             connection = DriverManager.getConnection(url, username, password);
         }
         catch (Exception e){
