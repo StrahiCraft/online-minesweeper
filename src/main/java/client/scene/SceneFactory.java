@@ -63,15 +63,9 @@ public class SceneFactory {
         });
 
         login.setOnMouseClicked(event -> {
-            if(AccountValidation.validLogin(username.getText(), password.getText())){
-                System.out.println("Login successful!");
-                // TODO set current user
-                SceneManager.changeScene(SceneType.MAIN_MENU);
-            }
-            else {
-                System.out.println("User not found!");
-                // TODO add some kind of error message
-            }
+            System.out.println("Login clicked");
+            String[] loginData = { username.getText(), password.getText() };
+            ClientApplication.getClientInstance().sendMessage(ServerMessageType.LOGIN, loginData);
         });
         register.setOnMouseClicked(event -> {
             SceneManager.changeScene(SceneType.REGISTER);

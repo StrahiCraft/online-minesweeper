@@ -32,13 +32,25 @@ public class Client extends Thread {
     private String playerName;
 
     /**
+     * Output stream for sending objects to the server
+     */
+    private ObjectOutputStream objectOutputStream;
+    /**
+     * Input stream for receiving objects from the server
+     */
+    private ObjectInputStream objectInputStream;
+
+    /**
      * False if the server is offline or connection failed
      */
     private boolean connectionSuccessful = false;
 
     public Client() {
         try{
-            this.socket = new Socket(IP, PORT);
+            socket = new Socket(IP, PORT);
+            objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+            objectOutputStream.flush();
+            objectInputStream = new ObjectInputStream(socket.getInputStream());
         }
         catch (Exception e){
             System.out.println("Server not found...");
@@ -51,12 +63,9 @@ public class Client extends Thread {
      */
     public boolean attemptConnectionToServer(){
         try{
-            BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
+            objectOutputStream.writeObject("Trying to connect client");
 
-            output.println("Trying to connect client");
-
-            clientId = UUID.fromString(input.readLine());
+            clientId = (UUID) objectInputStream.readObject();
             System.out.println(clientId);
 
             connectionSuccessful = true;
@@ -72,22 +81,33 @@ public class Client extends Thread {
         return connectionSuccessful;
     }
 
+    /**
+     * Sends a message to the server with no additional data
+     * @param messageType Type of message being sent to the server
+     */
     public void sendMessage(ServerMessageType messageType){
         sendMessage(messageType, null);
     }
 
+    /**
+     * Sends a message to the server with additional data in the form of an Object
+     * @param messageType Type of message being sent to the server
+     * @param data Data sent to the server
+     */
     public void sendMessage(ServerMessageType messageType, Object data){
         try{
-            ObjectOutputStream messageObject = new ObjectOutputStream(socket.getOutputStream());
-
-            messageObject.writeObject(new ClientMessage(clientId, messageType, data));
-            messageObject.flush();
+            objectOutputStream.writeObject(new ClientMessage(clientId, messageType, data));
+            objectOutputStream.reset();
+            objectOutputStream.flush();
         }
         catch (Exception e){
             System.out.println("Connection to server failed, no message was sent.");
         }
     }
 
+    /**
+     * This function is called when the game is closed
+     */
     public void onGameClosed(){
         sendMessage(ServerMessageType.QUIT);
         Thread.currentThread().interrupt();
@@ -102,8 +122,11 @@ public class Client extends Thread {
         try {
             if(attemptConnectionToServer()){
                 while (!Thread.currentThread().isInterrupted()){
-                    ObjectInputStream inputObject = new ObjectInputStream(socket.getInputStream());
-                    ClientMessage receivedMessage = (ClientMessage) inputObject.readObject();
+                    if(objectInputStream == null){
+                        continue;
+                    }
+
+                    ClientMessage receivedMessage = (ClientMessage) objectInputStream.readObject();
 
                     if(receivedMessage == null){
                         continue;
@@ -111,15 +134,22 @@ public class Client extends Thread {
 
                     switch (receivedMessage.getMessageType()){
                         case REGISTER_SUCCESS:
+                        case LOGIN_SUCCESS:
                             Platform.runLater(() -> SceneManager.changeScene(SceneType.MAIN_MENU));
                             break;
                         case REGISTER_FAIL:
                             // TODO set register failed message
                             break;
+                        case LOGIN_FAIL:
+                            // TODO set login failed message
+                            break;
                     }
+
                     System.out.println(receivedMessage.getMessageType());
                 }
             }
+            objectOutputStream.close();
+            objectInputStream.close();
         }
         catch (Exception e){
             e.printStackTrace();
