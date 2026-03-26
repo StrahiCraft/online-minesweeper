@@ -1,5 +1,7 @@
 package client;
 
+import utility.customTypes.ServerMessageType;
+
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -14,11 +16,20 @@ public class ClientMessage implements Serializable {
     /**
      * The message being sent / received
      */
-    private String message;
+    private ServerMessageType messageType;
 
-    public ClientMessage(UUID playerId, String message) {
+    private Object messageData;
+
+    public ClientMessage(UUID playerId, ServerMessageType message, Object messageData) {
         this.playerId = playerId;
-        this.message = message;
+        this.messageType = message;
+        this.messageData = messageData;
+    }
+
+    public ClientMessage(UUID playerId, ServerMessageType message) {
+        this.playerId = playerId;
+        this.messageType = message;
+        messageData = null;
     }
 
     public UUID getPlayerId() {
@@ -29,11 +40,19 @@ public class ClientMessage implements Serializable {
         this.playerId = playerId;
     }
 
-    public String getMessage() {
-        return message;
+    public ServerMessageType getMessageType() {
+        return messageType;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setMessageType(ServerMessageType messageType) {
+        this.messageType = messageType;
+    }
+
+    public Object getMessageData() {
+        return messageData;
+    }
+
+    public void setMessageData(Object messageData) {
+        this.messageData = messageData;
     }
 }

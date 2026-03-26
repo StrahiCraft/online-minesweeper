@@ -1,5 +1,6 @@
 package client.scene;
 
+import client.ClientApplication;
 import client.rendering.MinefieldRenderer;
 import game.GameManager;
 import javafx.geometry.Pos;
@@ -8,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import server.database.AccountValidation;
+import utility.customTypes.ServerMessageType;
 import utility.customTypes.Vector2Int;
 
 /**
@@ -109,12 +111,13 @@ public class SceneFactory {
         });
 
         register.setOnMouseClicked(event -> {
-            if(AccountValidation.validRegistration(username.getText(), password.getText())){
-                System.out.println("Registration successful!");
-                SceneManager.changeScene(SceneType.MAIN_MENU);
+            if(username.getText().contains(" ") || password.getText().contains(" ")){
+                // TODO add you cant use spaces in username or password error message
+                return;
             }
-            else {
-                System.out.println("Invalid credentials!");
+            if(password.getText().equals(confirmPassword.getText())){
+                String[] registerData = { username.getText(), password.getText() };
+                ClientApplication.getClientInstance().sendMessage(ServerMessageType.REGISTER, registerData);
             }
         });
         backToLogin.setOnMouseClicked(event -> {

@@ -50,7 +50,7 @@ public class ServerApplication {
                     UUID clientId = UUID.randomUUID();
                     output.println(clientId);
 
-                    ClientHandler clientHandler = new ClientHandler(clientSocket);
+                    ClientHandler clientHandler = new ClientHandler(clientSocket, clientId);
                     clientHandler.start();
 
                     connectedClients.put(clientId, clientHandler);

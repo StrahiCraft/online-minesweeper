@@ -3,6 +3,7 @@ package client;
 import client.scene.SceneManager;
 import client.scene.SceneType;
 import javafx.application.Platform;
+import utility.customTypes.ServerMessageType;
 
 import java.io.*;
 import java.net.Socket;
@@ -23,7 +24,7 @@ public class Client extends Thread {
      */
     private final int PORT = 25655;
 
-    private UUID playerID;
+    private UUID clientId;
 
     /**
      * Name of the player connecting to the server through this client
@@ -55,8 +56,8 @@ public class Client extends Thread {
 
             output.println("Trying to connect client");
 
-            playerID = UUID.fromString(input.readLine());
-            System.out.println(playerID);
+            clientId = UUID.fromString(input.readLine());
+            System.out.println(clientId);
 
             connectionSuccessful = true;
         }
@@ -71,11 +72,15 @@ public class Client extends Thread {
         return connectionSuccessful;
     }
 
-    public void sendMessage(String message){
+    public void sendMessage(ServerMessageType messageType){
+        sendMessage(messageType, null);
+    }
+
+    public void sendMessage(ServerMessageType messageType, Object data){
         try{
             ObjectOutputStream messageObject = new ObjectOutputStream(socket.getOutputStream());
 
-            messageObject.writeObject(new ClientMessage(playerID, message));
+            messageObject.writeObject(new ClientMessage(clientId, messageType, data));
             messageObject.flush();
         }
         catch (Exception e){
@@ -84,7 +89,7 @@ public class Client extends Thread {
     }
 
     public void onGameClosed(){
-        sendMessage("quit");
+        sendMessage(ServerMessageType.QUIT);
         Thread.currentThread().interrupt();
         System.exit(0);
     }
@@ -103,7 +108,16 @@ public class Client extends Thread {
                     if(receivedMessage == null){
                         continue;
                     }
-                    System.out.println(receivedMessage.getMessage());
+
+                    switch (receivedMessage.getMessageType()){
+                        case REGISTER_SUCCESS:
+                            Platform.runLater(() -> SceneManager.changeScene(SceneType.MAIN_MENU));
+                            break;
+                        case REGISTER_FAIL:
+                            // TODO set register failed message
+                            break;
+                    }
+                    System.out.println(receivedMessage.getMessageType());
                 }
             }
         }
