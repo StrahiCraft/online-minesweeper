@@ -3,6 +3,7 @@ package client.scene;
 import client.ClientApplication;
 import client.rendering.MinefieldRenderer;
 import game.GameManager;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -35,7 +36,10 @@ public class SceneFactory {
         root.setSpacing(10);
         root.setAlignment(Pos.CENTER);
 
-        return new Scene(root, resolution.getX(), resolution.getY());
+        Scene scene = new Scene(root, resolution.getX(), resolution.getY());
+        scene.getStylesheets().add(SceneFactory.class.getResource("/style/style.css").toExternalForm());
+
+        return scene;
     }
 
     /**
@@ -74,7 +78,10 @@ public class SceneFactory {
         root.setSpacing(10);
         root.setAlignment(Pos.CENTER);
 
-        return new Scene(root, resolution.getX(), resolution.getY());
+        Scene scene = new Scene(root, resolution.getX(), resolution.getY());
+        scene.getStylesheets().add(SceneFactory.class.getResource("/style/style.css").toExternalForm());
+
+        return scene;
     }
 
     /**
@@ -104,14 +111,23 @@ public class SceneFactory {
         });
 
         register.setOnMouseClicked(event -> {
+            if(username.getText().isEmpty() || password.getText().isEmpty()){
+                ClientApplication.getClientInstance().alert("Registration error",
+                        "Username and password can not be empty!", Alert.AlertType.ERROR);
+                return;
+            }
             if(username.getText().contains(" ") || password.getText().contains(" ")){
-                // TODO add you cant use spaces in username or password error message
+                ClientApplication.getClientInstance().alert("Registration error",
+                        "Spaces are not allowed in username and password!", Alert.AlertType.ERROR);
                 return;
             }
             if(password.getText().equals(confirmPassword.getText())){
                 String[] registerData = { username.getText(), password.getText() };
                 ClientApplication.getClientInstance().sendMessage(ServerMessageType.REGISTER, registerData);
+                return;
             }
+            ClientApplication.getClientInstance().alert("Registration error",
+                    "Password and confirm password are not the same!", Alert.AlertType.ERROR);
         });
         backToLogin.setOnMouseClicked(event -> {
             SceneManager.changeScene(SceneType.LOGIN);
@@ -121,7 +137,10 @@ public class SceneFactory {
         root.setSpacing(10);
         root.setAlignment(Pos.CENTER);
 
-        return new Scene(root, resolution.getX(), resolution.getY());
+        Scene scene = new Scene(root, resolution.getX(), resolution.getY());
+        scene.getStylesheets().add(SceneFactory.class.getResource("/style/style.css").toExternalForm());
+
+        return scene;
     }
 
 
@@ -158,7 +177,10 @@ public class SceneFactory {
         root.setSpacing(10);
         root.setAlignment(Pos.CENTER);
 
-        return new Scene(root, resolution.getX(), resolution.getY());
+        Scene scene = new Scene(root, resolution.getX(), resolution.getY());
+        scene.getStylesheets().add(SceneFactory.class.getResource("/style/style.css").toExternalForm());
+
+        return scene;
     }
 
     /**
@@ -187,7 +209,10 @@ public class SceneFactory {
         root.setSpacing(10);
         root.setAlignment(Pos.CENTER);
 
-        return new Scene(root, resolution.getX(), resolution.getY());
+        Scene scene = new Scene(root, resolution.getX(), resolution.getY());
+        scene.getStylesheets().add(SceneFactory.class.getResource("/style/style.css").toExternalForm());
+
+        return scene;
     }
 
     /**
@@ -264,7 +289,10 @@ public class SceneFactory {
         root.setSpacing(10);
         root.setAlignment(Pos.CENTER);
 
-        return new Scene(root, resolution.getX(), resolution.getY());
+        Scene scene = new Scene(root, resolution.getX(), resolution.getY());
+        scene.getStylesheets().add(SceneFactory.class.getResource("/style/style.css").toExternalForm());
+
+        return scene;
     }
 
     /**

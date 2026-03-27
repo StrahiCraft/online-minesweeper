@@ -1,6 +1,6 @@
 package server;
 
-import client.ClientMessage;
+import client.ServerMessage;
 import server.database.AccountValidation;
 import server.database.DatabaseManager;
 import utility.customTypes.ServerMessageType;
@@ -60,7 +60,7 @@ public class ClientHandler extends Thread {
      */
     private void sendMessage(ServerMessageType messageType, Object data){
         try{
-            objectOutputStream.writeObject(new ClientMessage(clientId, messageType, data));
+            objectOutputStream.writeObject(new ServerMessage(clientId, messageType, data));
             objectOutputStream.reset();
             objectOutputStream.flush();
         }
@@ -80,7 +80,7 @@ public class ClientHandler extends Thread {
                     continue;
                 }
 
-                ClientMessage clientMessage = (ClientMessage) objectInputStream.readObject();
+                ServerMessage clientMessage = (ServerMessage) objectInputStream.readObject();
 
                 if(clientMessage == null) {
                     continue;
@@ -89,7 +89,7 @@ public class ClientHandler extends Thread {
 
                 switch (messageType){
                     case QUIT:
-                        ServerApplication.onPlayerDisconnected(clientMessage.getPlayerId());
+                        ServerApplication.onPlayerDisconnected(clientMessage.getClientId());
                         break;
                     case REGISTER:
                         String[] registerData = (String[]) clientMessage.getMessageData();

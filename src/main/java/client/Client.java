@@ -3,6 +3,7 @@ package client;
 import client.scene.SceneManager;
 import client.scene.SceneType;
 import javafx.application.Platform;
+import javafx.scene.control.Alert;
 import utility.customTypes.ServerMessageType;
 
 import java.io.*;
@@ -96,7 +97,7 @@ public class Client extends Thread {
      */
     public void sendMessage(ServerMessageType messageType, Object data){
         try{
-            objectOutputStream.writeObject(new ClientMessage(clientId, messageType, data));
+            objectOutputStream.writeObject(new ServerMessage(clientId, messageType, data));
             objectOutputStream.reset();
             objectOutputStream.flush();
         }
@@ -114,6 +115,15 @@ public class Client extends Thread {
         System.exit(0);
     }
 
+    public void alert(String headerText, String containerText, Alert.AlertType alertType){
+        Platform.runLater(() -> {
+            Alert alert = new Alert(alertType);
+            alert.setHeaderText(headerText);
+            alert.setContentText(containerText);
+            alert.showAndWait();
+        });
+    }
+
     /**
      * Runs all client side client-server logic after successful connection to the server
      */
@@ -126,7 +136,7 @@ public class Client extends Thread {
                         continue;
                     }
 
-                    ClientMessage receivedMessage = (ClientMessage) objectInputStream.readObject();
+                    ServerMessage receivedMessage = (ServerMessage) objectInputStream.readObject();
 
                     if(receivedMessage == null){
                         continue;
@@ -140,10 +150,10 @@ public class Client extends Thread {
                             System.out.println("Player name: " + playerName);
                             break;
                         case REGISTER_FAIL:
-                            // TODO set register failed message
+                            alert("Registration error", "User already exists!", Alert.AlertType.ERROR);
                             break;
                         case LOGIN_FAIL:
-                            // TODO set login failed message
+                            alert("Login error", "Invalid username or password!", Alert.AlertType.ERROR);
                             break;
                         default:
                             break;
@@ -154,6 +164,9 @@ public class Client extends Thread {
             }
             objectOutputStream.close();
             objectInputStream.close();
+        }
+        catch (EOFException e){
+            System.out.println("End of socket data, disconnected.");
         }
         catch (Exception e){
             e.printStackTrace();
