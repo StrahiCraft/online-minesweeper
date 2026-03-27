@@ -111,6 +111,17 @@ public class SceneFactory {
         });
 
         register.setOnMouseClicked(event -> {
+            if(username.getText().length() > 20){
+                ClientApplication.getClientInstance().alert("Registration error",
+                        "Username too long! Must be 20 or less characters!", Alert.AlertType.ERROR);
+                return;
+            }
+            if(password.getText().length() > 45){
+                ClientApplication.getClientInstance().alert("Registration error",
+                        "Password too long! Must be 45 or less characters!", Alert.AlertType.ERROR);
+                return;
+            }
+
             if(username.getText().isEmpty() || password.getText().isEmpty()){
                 ClientApplication.getClientInstance().alert("Registration error",
                         "Username and password can not be empty!", Alert.AlertType.ERROR);
