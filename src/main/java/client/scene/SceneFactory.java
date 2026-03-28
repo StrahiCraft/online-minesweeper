@@ -237,7 +237,7 @@ public class SceneFactory {
 
         HBox hostnameHBox = new HBox();
 
-        TextField roomNameTextField = new TextField();
+        TextField roomNameTextField = new TextField(ClientApplication.getClientInstance().getCurrentLobbyName());
         roomNameTextField.setPromptText("Enter room name...");
         Button setRoomNameButton = new Button("Set room name");
 
@@ -250,7 +250,7 @@ public class SceneFactory {
         VBox widthSettingsVBox = new VBox();
 
         Label boardWidthLabel = new Label("Board width");
-        TextField widthTextField = new TextField();
+        TextField widthTextField = new TextField("16");
         widthTextField.setPromptText("Enter width (max 32)");
 
         widthSettingsVBox.getChildren().addAll(boardWidthLabel, widthTextField);
@@ -258,7 +258,7 @@ public class SceneFactory {
         VBox heightSettingsVBox = new VBox();
 
         Label boardHeightLabel = new Label("Board height");
-        TextField heightTextField = new TextField();
+        TextField heightTextField = new TextField("16");
         heightTextField.setPromptText("Enter height (max 32)");
 
         heightSettingsVBox.getChildren().addAll(boardHeightLabel, heightTextField);
@@ -266,7 +266,7 @@ public class SceneFactory {
         VBox mineCountVBox = new VBox();
 
         Label mineCountLabel = new Label("Mine count");
-        TextField mineCountTextField = new TextField();
+        TextField mineCountTextField = new TextField("64");
         mineCountTextField.setPromptText("Enter mine count (max 25% board coverage");
 
         mineCountVBox.getChildren().addAll(mineCountLabel, mineCountTextField);
@@ -291,12 +291,14 @@ public class SceneFactory {
             GameManager.startGame(new Vector2Int(boardWidth, boardHeight), mineCount);
         });
         backButton.setOnMouseClicked(event -> {
+            ClientApplication.getClientInstance().sendMessage(ServerMessageType.DELETE_LOBBY, ClientApplication.getClientInstance().getCurrentLobbyName());
             SceneManager.changeScene(SceneType.MAIN_MENU);
         });
 
         root.getChildren().addAll(title, hostnameHBox, errorLabel, gameSettingsHBox, playerList, startGameButton, backButton);
         root.setSpacing(10);
         root.setAlignment(Pos.CENTER);
+        roomNameTextField.deselect();
 
         Scene scene = new Scene(root, resolution.getX(), resolution.getY());
         scene.getStylesheets().add(SceneFactory.class.getResource("/style/style.css").toExternalForm());
