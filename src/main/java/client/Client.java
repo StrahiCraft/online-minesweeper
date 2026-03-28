@@ -165,6 +165,8 @@ public class Client extends Thread {
                             break;
                         case CREATE_LOBBY_SUCCESS:
                             Platform.runLater(() -> SceneManager.changeScene(SceneType.HOST));
+                            String[] messageData = { playerName, currentLobbyName };
+                            sendMessage(ServerMessageType.SET_PLAYER_TO_LOBBY, messageData);
                             break;
                         case CREATE_LOBBY_FAIL:
                             alert("Lobby creation error", "Lobby creation failed!", Alert.AlertType.ERROR);

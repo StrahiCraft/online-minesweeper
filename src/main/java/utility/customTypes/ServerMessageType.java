@@ -20,5 +20,5 @@ public enum ServerMessageType {
 
     // LOBBY MANAGEMENT
     DELETE_LOBBY,
-
+    SET_PLAYER_TO_LOBBY
 }

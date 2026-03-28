@@ -92,6 +92,7 @@ public class ClientHandler extends Thread {
                     case LOGIN -> loginPlayer(messageFromClient);
                     case CREATE_LOBBY -> createLobby(messageFromClient);
                     case DELETE_LOBBY -> LobbyManager.deleteLobby((String) messageFromClient.getMessageData());
+                    case SET_PLAYER_TO_LOBBY -> setPlayerToLobby(messageFromClient);
                     default -> System.out.println("Unknown message type " + messageType);
                 }
             }
@@ -141,7 +142,7 @@ public class ClientHandler extends Thread {
 
     /**
      * Tries to create a lobby
-     * @param messageFromClient
+     * @param messageFromClient Message from the client, should contain the name of the lobby to be created
      */
     private void createLobby(ServerMessage messageFromClient){
         String lobbyName = (String) messageFromClient.getMessageData();
@@ -152,5 +153,15 @@ public class ClientHandler extends Thread {
         else {
             sendMessage(ServerMessageType.CREATE_LOBBY_FAIL);
         }
+    }
+
+    /**
+     * Sets the player's lobby id to the given lobby based on the player name
+     * @param messageFromClient Message from the client, should contain the player's name and the name of the lobby the
+     *                          given player is being set to
+     */
+    private void setPlayerToLobby(ServerMessage messageFromClient){
+        String[] decodedMessageData = (String[]) messageFromClient.getMessageData();
+        LobbyManager.setPlayerToLobby(decodedMessageData[0], decodedMessageData[1]);
     }
 }

@@ -40,4 +40,20 @@ public class LobbyManager {
         String[] parameters = { lobbyName };
         DatabaseManager.executeUpdate("DELETE FROM lobby WHERE name = ?", parameters);
     }
+
+    public static void setPlayerToLobby(String playerName, String lobbyName) {
+        String[] parameters = { lobbyName };
+        ResultSet resultSet = DatabaseManager.executeQuery("SELECT * FROM lobby WHERE name = ?", parameters);
+
+        try{
+            if (resultSet.next()){
+                int lobbyId = resultSet.getInt("lobby_id");
+                String[] newParameters = { playerName };
+                DatabaseManager.executeUpdate("UPDATE player SET lobby_id = " + lobbyId +  " WHERE username = ?", newParameters);
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 }
