@@ -3,13 +3,11 @@ package client.scene;
 import client.ClientApplication;
 import client.rendering.MinefieldRenderer;
 import game.GameManager;
-import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import server.database.AccountValidation;
 import utility.customTypes.ServerMessageType;
 import utility.customTypes.Vector2Int;
 
@@ -172,7 +170,7 @@ public class SceneFactory {
         Button quitGameButton = new Button("Quit Game");
 
         hostGameButton.setOnMouseClicked(event -> {
-            SceneManager.changeScene(SceneType.HOST);
+            ClientApplication.getClientInstance().sendMessage(ServerMessageType.CREATE_LOBBY, ClientApplication.getClientInstance().getCurrentLobbyName());
         });
         joinGameButton.setOnMouseClicked(event -> {
             SceneManager.changeScene(SceneType.JOIN);

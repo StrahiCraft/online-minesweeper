@@ -9,4 +9,6 @@ module com.example.onlineminesweeper {
     exports client;
     exports client.scene;
     opens client.scene to javafx.fxml;
+    exports client_server_comunication;
+    opens client_server_comunication to javafx.fxml;
 }

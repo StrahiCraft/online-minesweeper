@@ -2,6 +2,7 @@ package client;
 
 import client.scene.SceneManager;
 import client.scene.SceneType;
+import client_server_comunication.ServerMessage;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import utility.customTypes.ServerMessageType;
@@ -31,6 +32,11 @@ public class Client extends Thread {
      * Name of the player connecting to the server through this client
      */
     private String playerName;
+
+    /**
+     * Current name of the lobby this client is hosting
+     */
+    private String currentLobbyName;
 
     /**
      * Output stream for sending objects to the server
@@ -110,6 +116,7 @@ public class Client extends Thread {
      * This function is called when the game is closed
      */
     public void onGameClosed(){
+        sendMessage(ServerMessageType.DELETE_LOBBY, currentLobbyName);
         sendMessage(ServerMessageType.QUIT);
         Thread.currentThread().interrupt();
         System.exit(0);
@@ -146,6 +153,7 @@ public class Client extends Thread {
                         case REGISTER_SUCCESS:
                         case LOGIN_SUCCESS:
                             playerName = (String) receivedMessage.getMessageData();
+                            currentLobbyName = playerName + "'s lobby";
                             Platform.runLater(() -> SceneManager.changeScene(SceneType.MAIN_MENU));
                             System.out.println("Player name: " + playerName);
                             break;
@@ -154,6 +162,12 @@ public class Client extends Thread {
                             break;
                         case LOGIN_FAIL:
                             alert("Login error", "Invalid username or password!", Alert.AlertType.ERROR);
+                            break;
+                        case CREATE_LOBBY_SUCCESS:
+                            Platform.runLater(() -> SceneManager.changeScene(SceneType.HOST));
+                            break;
+                        case CREATE_LOBBY_FAIL:
+                            alert("Lobby creation error", "Lobby creation failed!", Alert.AlertType.ERROR);
                             break;
                         default:
                             break;
@@ -171,5 +185,21 @@ public class Client extends Thread {
         catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    public String getPlayerName() {
+        return playerName;
+    }
+
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
+    }
+
+    public String getCurrentLobbyName() {
+        return currentLobbyName;
+    }
+
+    public void setCurrentLobbyName(String currentLobbyName) {
+        this.currentLobbyName = currentLobbyName;
     }
 }

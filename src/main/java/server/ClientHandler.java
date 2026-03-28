@@ -1,7 +1,6 @@
 package server;
 
-import client.ServerMessage;
-import server.database.AccountValidation;
+import client_server_comunication.ServerMessage;
 import server.database.DatabaseManager;
 import utility.customTypes.ServerMessageType;
 
@@ -80,41 +79,20 @@ public class ClientHandler extends Thread {
                     continue;
                 }
 
-                ServerMessage clientMessage = (ServerMessage) objectInputStream.readObject();
+                ServerMessage messageFromClient = (ServerMessage) objectInputStream.readObject();
 
-                if(clientMessage == null) {
+                if(messageFromClient == null) {
                     continue;
                 }
-                ServerMessageType messageType = clientMessage.getMessageType();
+                ServerMessageType messageType = messageFromClient.getMessageType();
 
                 switch (messageType){
-                    case QUIT:
-                        ServerApplication.onPlayerDisconnected(clientMessage.getClientId());
-                        break;
-                    case REGISTER:
-                        String[] registerData = (String[]) clientMessage.getMessageData();
-
-                        if(AccountValidation.validRegistration(registerData[0], registerData[1])){
-                            DatabaseManager.executeUpdate("INSERT INTO Player(`username`, `password`) VALUES (?, ?)", registerData);
-                            sendMessage(ServerMessageType.REGISTER_SUCCESS, registerData[0]);
-                        }
-                        else {
-                            sendMessage(ServerMessageType.REGISTER_FAIL);
-                        }
-
-                        break;
-                    case LOGIN:
-                        String[] loginData = (String[]) clientMessage.getMessageData();
-
-                        if(AccountValidation.validLogin(loginData[0], loginData[1])){
-                            sendMessage(ServerMessageType.LOGIN_SUCCESS, loginData[0]);
-                        }
-                        else {
-                            sendMessage(ServerMessageType.LOGIN_FAIL);
-                        }
-                        break;
-                    default:
-                        break;
+                    case QUIT -> ServerApplication.onPlayerDisconnected(messageFromClient.getClientId());
+                    case REGISTER -> registerPlayer(messageFromClient);
+                    case LOGIN -> loginPlayer(messageFromClient);
+                    case CREATE_LOBBY -> createLobby(messageFromClient);
+                    case DELETE_LOBBY -> LobbyManager.deleteLobby((String) messageFromClient.getMessageData());
+                    default -> System.out.println("Unknown message type " + messageType);
                 }
             }
             objectOutputStream.close();
@@ -123,6 +101,56 @@ public class ClientHandler extends Thread {
         }
         catch (Exception e){
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Tries to register the client, sends a REGISTER_SUCCESS message if there is no user with the name yet, and
+     * REGISTER_FAIL if there is
+     * @param messageFromClient Message from the client, should contain username and password for the account trying
+     *                          to register
+     */
+    private void registerPlayer(ServerMessage messageFromClient){
+        String[] registerData = (String[]) messageFromClient.getMessageData();
+
+        if(AccountValidation.validRegistration(registerData[0], registerData[1])){
+            DatabaseManager.executeUpdate("INSERT INTO Player(`username`, `password`) VALUES (?, ?)", registerData);
+            sendMessage(ServerMessageType.REGISTER_SUCCESS, registerData[0]);
+        }
+        else {
+            sendMessage(ServerMessageType.REGISTER_FAIL);
+        }
+    }
+
+    /**
+     * Tries to log in the client, sends a LOGIN_SUCCESS message if there exists a user with the given name and the
+     * password is correct, and LOGIN_FAILED if there isn't
+     * @param messageFromClient Message from the client, should contain username and password for the account trying
+     *                          to log in
+     */
+    private void loginPlayer(ServerMessage messageFromClient){
+        String[] loginData = (String[]) messageFromClient.getMessageData();
+
+        if(AccountValidation.validLogin(loginData[0], loginData[1])){
+            sendMessage(ServerMessageType.LOGIN_SUCCESS, loginData[0]);
+        }
+        else {
+            sendMessage(ServerMessageType.LOGIN_FAIL);
+        }
+    }
+
+    /**
+     * Tries to create a lobby
+     * @param messageFromClient
+     */
+    private void createLobby(ServerMessage messageFromClient){
+        String lobbyName = (String) messageFromClient.getMessageData();
+
+        if(LobbyManager.createLobby(lobbyName)){
+            sendMessage(ServerMessageType.CREATE_LOBBY_SUCCESS);
+        }
+        else {
+            sendMessage(ServerMessageType.CREATE_LOBBY_FAIL);
         }
     }
 }

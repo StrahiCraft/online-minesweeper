@@ -1,11 +1,13 @@
-package server.database;
+package server;
+
+import server.database.DatabaseManager;
 
 import java.sql.ResultSet;
 
 public class AccountValidation {
     public static boolean validLogin(String username, String password){
         String[] parameters = { username, password };
-        ResultSet resultSet = DatabaseManager.executeQuery("SELECT * FROM Player WHERE username = ? AND password = ?", parameters);
+        ResultSet resultSet = DatabaseManager.executeQuery("SELECT * FROM player WHERE username = ? AND password = ?", parameters);
         boolean loginValid = false;
 
         try{
@@ -22,7 +24,7 @@ public class AccountValidation {
 
     public static boolean validRegistration(String username, String password){
         String[] parameters = { username };
-        ResultSet resultSet = DatabaseManager.executeQuery("SELECT * FROM Player WHERE username = ?", parameters);
+        ResultSet resultSet = DatabaseManager.executeQuery("SELECT * FROM player WHERE username = ?", parameters);
         boolean registrationValid = true;
 
         try{
@@ -36,7 +38,7 @@ public class AccountValidation {
 
         if(registrationValid){
             String[] newAccountParameters = { username, password };
-            DatabaseManager.executeUpdate("INSERT INTO Player (username, password) VALUES(?, ?)", newAccountParameters);
+            DatabaseManager.executeUpdate("INSERT INTO player (username, password) VALUES(?, ?)", newAccountParameters);
         }
 
         return registrationValid;

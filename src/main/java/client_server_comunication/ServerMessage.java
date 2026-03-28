@@ -1,4 +1,4 @@
-package client;
+package client_server_comunication;
 
 import utility.customTypes.ServerMessageType;
 

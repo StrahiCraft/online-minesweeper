@@ -35,7 +35,6 @@ public class ClientApplication extends Application {
 
         stage.setScene(SceneFactory.getConnectionFailedScene());
         stage.show();
-
     }
 
     /**
