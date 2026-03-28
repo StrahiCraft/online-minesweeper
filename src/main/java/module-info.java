@@ -4,6 +4,7 @@ module com.example.onlineminesweeper {
     requires java.desktop;
     requires mysql.connector.j;
     requires java.sql;
+    requires ons;
 
     opens client to javafx.fxml;
     exports client;

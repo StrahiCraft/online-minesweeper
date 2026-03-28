@@ -1,7 +1,5 @@
 package client_server_comunication;
 
-import utility.customTypes.ServerMessageType;
-
 import java.io.Serializable;
 import java.util.UUID;
 

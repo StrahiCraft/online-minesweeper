@@ -1,4 +1,4 @@
-package utility.customTypes;
+package client_server_comunication;
 
 public enum ServerMessageType {
     QUIT,
@@ -30,4 +30,6 @@ public enum ServerMessageType {
     JOIN_LOBBY_SUCCESS,
     JOIN_LOBBY_FAIL,
     LEAVE_LOBBY,
+    REFRESH_LOBBY,
+    LOBBY_DISBANDED,
 }

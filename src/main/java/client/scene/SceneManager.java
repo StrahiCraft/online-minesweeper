@@ -12,6 +12,8 @@ public class SceneManager {
      */
     private static Stage mainStage;
 
+    private static SceneType currentSceneType;
+
     /**
      * Sets the stage that will be used for changing scenes. Only call this function once to set up the scene manager.
      * @param stage
@@ -27,32 +29,21 @@ public class SceneManager {
      * The type of scene that will be set.
      */
     public static void changeScene(SceneType sceneType) {
+        currentSceneType = sceneType;
         switch (sceneType) {
-            case LOGIN:
-                mainStage.setScene(SceneFactory.getLoginScene());
-                break;
-            case REGISTER:
-                mainStage.setScene(SceneFactory.getRegisterScene());
-                break;
-            case MAIN_MENU:
-                mainStage.setScene(SceneFactory.getMainMenuScene());
-                break;
-            case JOIN:
-                mainStage.setScene(SceneFactory.getJoinScene());
-                break;
-            case HOST:
-                mainStage.setScene(SceneFactory.getHostScene());
-                break;
-            case STATISTICS:
-                break;
-            case GAME:
-                mainStage.setScene(SceneFactory.getGameScene());
-                break;
-            default:
-                mainStage.setScene(SceneFactory.getMainMenuScene());
-                // TODO add some exception to notify that something has gone wrong
-                break;
+            case LOGIN -> mainStage.setScene(SceneFactory.getLoginScene());
+            case REGISTER -> mainStage.setScene(SceneFactory.getRegisterScene());
+            case MAIN_MENU -> mainStage.setScene(SceneFactory.getMainMenuScene());
+            case HOST ->  mainStage.setScene(SceneFactory.getHostScene());
+            case LOBBY -> mainStage.setScene(SceneFactory.getLobbyScene());
+            case JOIN -> mainStage.setScene(SceneFactory.getJoinScene());
+            case GAME -> mainStage.setScene(SceneFactory.getGameScene());
+            default -> System.out.println("Scene doesn't exist!");
         }
+    }
+
+    public static void refreshCurrentScene(){
+        changeScene(currentSceneType);
     }
 
     public static void close(){

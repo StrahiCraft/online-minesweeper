@@ -2,14 +2,17 @@ package client.scene;
 
 import client.ClientApplication;
 import client.rendering.MinefieldRenderer;
+import client_server_comunication.LobbyData;
 import game.GameManager;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import utility.customTypes.ServerMessageType;
+import client_server_comunication.ServerMessageType;
 import utility.customTypes.Vector2Int;
+
+import java.util.UUID;
 
 /**
  * Factory class made for storing scene templates and making instances using them
@@ -166,7 +169,6 @@ public class SceneFactory {
 
         Button hostGameButton = new Button("Host Game");
         Button joinGameButton = new Button("Join Game");
-        Button statisticsButton = new Button("Statistics");
         Button quitGameButton = new Button("Quit Game");
 
         hostGameButton.setOnMouseClicked(event -> {
@@ -175,14 +177,11 @@ public class SceneFactory {
         joinGameButton.setOnMouseClicked(event -> {
             SceneManager.changeScene(SceneType.JOIN);
         });
-        statisticsButton.setOnMouseClicked(event -> {
-
-        });
         quitGameButton.setOnMouseClicked(event -> {
             SceneManager.close();
         });
 
-        root.getChildren().addAll(title, hostGameButton, joinGameButton, statisticsButton, quitGameButton);
+        root.getChildren().addAll(title, hostGameButton, joinGameButton, quitGameButton);
         root.setSpacing(10);
         root.setAlignment(Pos.CENTER);
 
@@ -233,12 +232,13 @@ public class SceneFactory {
      */
     public static Scene getHostScene() {
         VBox root = new VBox();
+        LobbyData currentLobbyData = ClientApplication.getClientInstance().getCurrentLobbyData();
 
         Label title = new Label("Host Game");
 
         HBox hostnameHBox = new HBox();
 
-        TextField roomNameTextField = new TextField(ClientApplication.getClientInstance().getCurrentLobbyName());
+        TextField roomNameTextField = new TextField(currentLobbyData.getLobbyName());
         roomNameTextField.setPromptText("Enter room name...");
         Button setRoomNameButton = new Button("Set room name");
 
@@ -246,12 +246,10 @@ public class SceneFactory {
 
         HBox gameSettingsHBox = new HBox();
 
-        Label errorLabel = new Label();
-
         VBox widthSettingsVBox = new VBox();
 
         Label boardWidthLabel = new Label("Board width");
-        TextField widthTextField = new TextField("16");
+        TextField widthTextField = new TextField(Integer.toString(currentLobbyData.getMinefieldWidth()));
         widthTextField.setPromptText("Enter width (max 32)");
 
         widthSettingsVBox.getChildren().addAll(boardWidthLabel, widthTextField);
@@ -259,7 +257,7 @@ public class SceneFactory {
         VBox heightSettingsVBox = new VBox();
 
         Label boardHeightLabel = new Label("Board height");
-        TextField heightTextField = new TextField("16");
+        TextField heightTextField = new TextField(Integer.toString(currentLobbyData.getMinefieldHeight()));
         heightTextField.setPromptText("Enter height (max 32)");
 
         heightSettingsVBox.getChildren().addAll(boardHeightLabel, heightTextField);
@@ -267,7 +265,7 @@ public class SceneFactory {
         VBox mineCountVBox = new VBox();
 
         Label mineCountLabel = new Label("Mine count");
-        TextField mineCountTextField = new TextField("64");
+        TextField mineCountTextField = new TextField(Integer.toString(currentLobbyData.getMineCount()));
         mineCountTextField.setPromptText("Enter mine count (max 25% board coverage");
 
         mineCountVBox.getChildren().addAll(mineCountLabel, mineCountTextField);
@@ -275,9 +273,18 @@ public class SceneFactory {
         gameSettingsHBox.getChildren().addAll(widthSettingsVBox, heightSettingsVBox, mineCountVBox);
 
         ListView<String> playerList = new ListView<>();
+        for(UUID clientId : currentLobbyData.getClients()){
+            playerList.getItems().add(clientId.toString());
+        }
+
         Button startGameButton = new Button("Start Game");
 
-        Button backButton = new Button("Back");
+        Button backButton = new Button("Disband lobby");
+
+        backButton.setOnMouseClicked(event -> {
+            ClientApplication.getClientInstance().sendMessage(ServerMessageType.DELETE_LOBBY, ClientApplication.getClientInstance().getCurrentLobbyName());
+            SceneManager.changeScene(SceneType.LOBBY);
+        });
 
         setRoomNameButton.setOnMouseClicked(event -> {
             if(roomNameTextField.getText().isEmpty()){
@@ -306,13 +313,55 @@ public class SceneFactory {
         });
         backButton.setOnMouseClicked(event -> {
             ClientApplication.getClientInstance().sendMessage(ServerMessageType.DELETE_LOBBY, ClientApplication.getClientInstance().getCurrentLobbyName());
+            ClientApplication.getClientInstance().resetLobbyName();
             SceneManager.changeScene(SceneType.MAIN_MENU);
         });
 
-        root.getChildren().addAll(title, hostnameHBox, errorLabel, gameSettingsHBox, playerList, startGameButton, backButton);
+        root.getChildren().addAll(title, hostnameHBox, gameSettingsHBox, playerList, startGameButton, backButton);
         root.setSpacing(10);
         root.setAlignment(Pos.CENTER);
         roomNameTextField.deselect();
+
+        Scene scene = new Scene(root, resolution.getX(), resolution.getY());
+        scene.getStylesheets().add(SceneFactory.class.getResource("/style/style.css").toExternalForm());
+
+        return scene;
+    }
+
+    public static Scene getLobbyScene(){
+        VBox root = new VBox();
+        LobbyData currentLobbyData = ClientApplication.getClientInstance().getCurrentLobbyData();
+
+        if(currentLobbyData == null){
+            return new Scene(root, resolution.getX(), resolution.getY());
+        }
+
+        Label title = new Label("Lobby: " + currentLobbyData.getLobbyName());
+
+        HBox gameSettingsHBox = new HBox();
+
+        Label boardWidthLabel = new Label("Board width: " + Integer.toString(currentLobbyData.getMinefieldWidth()));
+        Label boardHeightLabel = new Label("Board height: " + Integer.toString(currentLobbyData.getMinefieldHeight()));
+
+        Label mineCountLabel = new Label("Mine count: " + Integer.toString(currentLobbyData.getMineCount()));
+
+        gameSettingsHBox.getChildren().addAll(boardWidthLabel, boardHeightLabel, mineCountLabel);
+
+        ListView<String> playerList = new ListView<>();
+        for(UUID clientId : currentLobbyData.getClients()){
+            playerList.getItems().add(clientId.toString());
+        }
+
+        Button backButton = new Button("Leave lobby");
+
+        backButton.setOnMouseClicked(event -> {
+            ClientApplication.getClientInstance().sendMessage(ServerMessageType.LEAVE_LOBBY, ClientApplication.getClientInstance().getPlayerName());
+            SceneManager.changeScene(SceneType.MAIN_MENU);
+        });
+
+        root.getChildren().addAll(title, gameSettingsHBox, playerList, backButton);
+        root.setSpacing(10);
+        root.setAlignment(Pos.CENTER);
 
         Scene scene = new Scene(root, resolution.getX(), resolution.getY());
         scene.getStylesheets().add(SceneFactory.class.getResource("/style/style.css").toExternalForm());

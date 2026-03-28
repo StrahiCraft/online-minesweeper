@@ -1,10 +1,12 @@
 package server;
 
 import server.database.DatabaseManager;
+import client_server_comunication.LobbyData;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -22,6 +24,11 @@ public class ServerApplication {
      * using it as the key
      */
     private static HashMap<UUID, ClientHandler> connectedClients = new HashMap<>();
+
+    /**
+     * List of all currently active lobbies
+     */
+    private static ArrayList<LobbyData> lobbies = new ArrayList<>();
 
     /**
      * Main function of the server, all client connection logic from the server side is done here
@@ -78,9 +85,40 @@ public class ServerApplication {
         }
     }
 
+    public static void createLobbyData(UUID hostId, String lobbyName){
+        lobbies.add(new LobbyData(hostId, lobbyName, 16, 16, 64));
+    }
+
+    public static void deleteLobbyData(String lobbyname){
+        lobbies.remove(getLobbyWithName(lobbyname));
+    }
+
+    public static LobbyData getLobbyWithName(String lobbyName){
+        for(LobbyData lobby : lobbies){
+            if(lobby.getLobbyName().equals(lobbyName)){
+                return lobby;
+            }
+        }
+        return null;
+    }
+
+    public static LobbyData getLobbyWithClient(UUID clientId){
+        for (LobbyData lobby : lobbies){
+            if(lobby.containsPlayer(clientId)){
+                return lobby;
+            }
+        }
+
+        return null;
+    }
+
     public static void onPlayerDisconnected(UUID playerId){
         System.out.println("Player " + playerId + " has disconnected!");
         connectedClients.get(playerId).interrupt();
         connectedClients.remove(playerId);
+    }
+
+    public static ClientHandler getClientHandler(UUID clientId){
+        return connectedClients.get(clientId);
     }
 }

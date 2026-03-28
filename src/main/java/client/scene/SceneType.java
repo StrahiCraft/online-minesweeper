@@ -8,6 +8,7 @@ public enum SceneType {
     REGISTER,
     MAIN_MENU,
     HOST,
+    LOBBY,
     JOIN,
     STATISTICS,
     GAME

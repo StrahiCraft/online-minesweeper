@@ -2,7 +2,8 @@ package server;
 
 import client_server_comunication.ServerMessage;
 import server.database.DatabaseManager;
-import utility.customTypes.ServerMessageType;
+import client_server_comunication.LobbyData;
+import client_server_comunication.ServerMessageType;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -92,7 +93,8 @@ public class ClientHandler extends Thread {
                     case LOGIN -> loginPlayer(messageFromClient);
                     case LOG_OUT -> logOutPlayer(messageFromClient);
                     case CREATE_LOBBY -> createLobby(messageFromClient);
-                    case DELETE_LOBBY -> LobbyManager.deleteLobby((String) messageFromClient.getMessageData());
+                    case DELETE_LOBBY -> deleteLobby(messageFromClient);
+                    case LEAVE_LOBBY -> leaveLobby(messageFromClient);
                     case JOIN_LOBBY -> joinLobby(messageFromClient);
                     case SET_PLAYER_TO_LOBBY -> setPlayerToLobby(messageFromClient);
                     case RENAME_LOBBY -> renameLobby(messageFromClient);
@@ -150,7 +152,7 @@ public class ClientHandler extends Thread {
 
     /**
      * Logs the player out of the account
-     * @param messageFromClient
+     * @param messageFromClient Message from the client, should be the username of the player to log out
      */
     private void logOutPlayer(ServerMessage messageFromClient){
         String playerName = (String) messageFromClient.getMessageData();
@@ -166,11 +168,25 @@ public class ClientHandler extends Thread {
         String lobbyName = (String) messageFromClient.getMessageData();
 
         if(LobbyManager.createLobby(lobbyName)){
-            sendMessage(ServerMessageType.CREATE_LOBBY_SUCCESS);
+            ServerApplication.createLobbyData(clientId, lobbyName);
+            System.out.println(ServerApplication.getLobbyWithClient(clientId));
+            sendMessage(ServerMessageType.CREATE_LOBBY_SUCCESS, ServerApplication.getLobbyWithClient(clientId));
         }
         else {
             sendMessage(ServerMessageType.CREATE_LOBBY_FAIL);
         }
+    }
+
+    public void deleteLobby(ServerMessage messageFromClient){
+        String lobbyName = (String) messageFromClient.getMessageData();
+        LobbyData lobbyData = ServerApplication.getLobbyWithName(lobbyName);
+
+        for(UUID client : lobbyData.getClients()){
+            ServerApplication.getClientHandler(client).sendMessage(ServerMessageType.LOBBY_DISBANDED);
+        }
+
+        LobbyManager.deleteLobby(lobbyName);
+        ServerApplication.deleteLobbyData(lobbyName);
     }
 
     /**
@@ -190,7 +206,9 @@ public class ClientHandler extends Thread {
     private void renameLobby(ServerMessage messageFromClient){
         String[] decodedMessageData = (String[]) messageFromClient.getMessageData();
         if(LobbyManager.renameLobby(decodedMessageData[0], decodedMessageData[1])){
-            sendMessage(ServerMessageType.LOBBY_RENAME_SUCCESS);
+            LobbyData currentLobby = ServerApplication.getLobbyWithName(decodedMessageData[0]);
+            currentLobby.setLobbyName(decodedMessageData[1]);
+            sendMessage(ServerMessageType.LOBBY_RENAME_SUCCESS, currentLobby);
         }
         else {
             sendMessage(ServerMessageType.LOBBY_RENAME_FAIL);
@@ -203,14 +221,38 @@ public class ClientHandler extends Thread {
      *                          the lobby the client is joining
      */
     private void joinLobby(ServerMessage messageFromClient){
-        String[] decodedMessage = (String[]) messageFromClient.getMessageData();
+        String[] decodedMessageData = (String[]) messageFromClient.getMessageData();
 
-        if(LobbyManager.getLobbyId(decodedMessage[1]) == null) {
+        if(LobbyManager.getLobbyId(decodedMessageData[1]) == null) {
             sendMessage(ServerMessageType.JOIN_LOBBY_FAIL);
         }
         else {
             setPlayerToLobby(messageFromClient);
+            LobbyData currentLobby = ServerApplication.getLobbyWithName(decodedMessageData[1]);
+            currentLobby.addPlayer(clientId);
             sendMessage(ServerMessageType.JOIN_LOBBY_SUCCESS);
+
+            refreshLobby(currentLobby);
+        }
+    }
+
+    /**
+     * Makes the given player leave any lobby
+     * @param messageFromClient Message from the client, should be the player's username
+     */
+    private void leaveLobby(ServerMessage messageFromClient){
+        String playerName = (String) messageFromClient.getMessageData();
+
+        LobbyData currentLobby = ServerApplication.getLobbyWithClient(clientId);
+        currentLobby.removePlayer(clientId);
+        LobbyManager.removePlayerFromLobby(playerName);
+
+        refreshLobby(currentLobby);
+    }
+
+    private void refreshLobby(LobbyData lobby){
+        for(UUID clientId : lobby.getClients()){
+            ServerApplication.getClientHandler(clientId).sendMessage(ServerMessageType.REFRESH_LOBBY, lobby);
         }
     }
 }

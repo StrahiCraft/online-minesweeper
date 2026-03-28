@@ -5,7 +5,8 @@ import client.scene.SceneType;
 import client_server_comunication.ServerMessage;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
-import utility.customTypes.ServerMessageType;
+import client_server_comunication.ServerMessageType;
+import client_server_comunication.LobbyData;
 
 import java.io.*;
 import java.net.Socket;
@@ -37,8 +38,12 @@ public class Client extends Thread {
      * Current name of the lobby this client is hosting
      */
     private String currentLobbyName;
-
+    /**
+     * Potential new name for the lobby
+     */
     private String potentialLobbyName;
+
+    private LobbyData currentLobbyData;
 
     /**
      * Output stream for sending objects to the server
@@ -174,7 +179,7 @@ public class Client extends Thread {
                         case REGISTER_SUCCESS:
                         case LOGIN_SUCCESS:
                             playerName = (String) receivedMessage.getMessageData();
-                            currentLobbyName = playerName + "'s lobby";
+                            resetLobbyName();
                             Platform.runLater(() -> SceneManager.changeScene(SceneType.MAIN_MENU));
                             System.out.println("Player name: " + playerName);
                             break;
@@ -188,6 +193,7 @@ public class Client extends Thread {
                             alert("Login error", "Invalid username or password!", Alert.AlertType.ERROR);
                             break;
                         case CREATE_LOBBY_SUCCESS:
+                            currentLobbyData = (LobbyData) receivedMessage.getMessageData();
                             Platform.runLater(() -> SceneManager.changeScene(SceneType.HOST));
                             String[] messageData = { playerName, currentLobbyName };
                             sendMessage(ServerMessageType.SET_PLAYER_TO_LOBBY, messageData);
@@ -197,16 +203,27 @@ public class Client extends Thread {
                             break;
                         case LOBBY_RENAME_SUCCESS:
                             currentLobbyName = potentialLobbyName;
+                            currentLobbyData = (LobbyData) receivedMessage.getMessageData();
                             alert("Lobby rename", "Lobby renamed successfully!", Alert.AlertType.INFORMATION);
                             break;
                         case LOBBY_RENAME_FAIL:
                             alert("Lobby rename", "Lobby with that name already exists!", Alert.AlertType.ERROR);
                             break;
                         case JOIN_LOBBY_SUCCESS:
-                            // TODO set to lobby scene
+                            Platform.runLater(() -> SceneManager.changeScene(SceneType.LOBBY));
                             break;
                         case JOIN_LOBBY_FAIL:
                             alert("Lobby not found", "No lobby with that name has been found!", Alert.AlertType.ERROR);
+                            break;
+                        case REFRESH_LOBBY:
+                            currentLobbyData = (LobbyData) receivedMessage.getMessageData();
+                            Platform.runLater(SceneManager::refreshCurrentScene);
+                            break;
+                        case LOBBY_DISBANDED:
+                            currentLobbyData = null;
+                            String[] message = { playerName, "" };
+                            sendMessage(ServerMessageType.SET_PLAYER_TO_LOBBY, message);
+                            Platform.runLater(() -> SceneManager.changeScene(SceneType.MAIN_MENU));
                             break;
                         default:
                             break;
@@ -228,6 +245,10 @@ public class Client extends Thread {
         catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    public void resetLobbyName(){
+        currentLobbyName = playerName + "'s lobby";
     }
 
     public String getPlayerName() {
@@ -252,5 +273,13 @@ public class Client extends Thread {
 
     public void setPotentialLobbyName(String potentialLobbyName) {
         this.potentialLobbyName = potentialLobbyName;
+    }
+
+    public LobbyData getCurrentLobbyData() {
+        return currentLobbyData;
+    }
+
+    public void setCurrentLobbyData(LobbyData currentLobbyData) {
+        this.currentLobbyData = currentLobbyData;
     }
 }
