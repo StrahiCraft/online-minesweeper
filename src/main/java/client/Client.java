@@ -196,6 +196,12 @@ public class Client extends Thread {
                         case LOBBY_RENAME_FAIL:
                             alert("Lobby rename", "Lobby with that name already exists!", Alert.AlertType.ERROR);
                             break;
+                        case JOIN_LOBBY_SUCCESS:
+                            // TODO set to lobby scene
+                            break;
+                        case JOIN_LOBBY_FAIL:
+                            alert("Lobby not found", "No lobby with that name has been found!", Alert.AlertType.ERROR);
+                            break;
                         default:
                             break;
                     }
@@ -203,8 +209,12 @@ public class Client extends Thread {
                     System.out.println(receivedMessage.getMessageType());
                 }
             }
-            objectOutputStream.close();
-            objectInputStream.close();
+            if(objectOutputStream != null){
+                objectOutputStream.close();
+            }
+            if(objectInputStream != null){
+                objectInputStream.close();
+            }
         }
         catch (EOFException e){
             System.out.println("End of socket data, disconnected.");

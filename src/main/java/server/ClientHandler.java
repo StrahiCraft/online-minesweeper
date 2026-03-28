@@ -93,6 +93,7 @@ public class ClientHandler extends Thread {
                     case LOG_OUT -> logOutPlayer(messageFromClient);
                     case CREATE_LOBBY -> createLobby(messageFromClient);
                     case DELETE_LOBBY -> LobbyManager.deleteLobby((String) messageFromClient.getMessageData());
+                    case JOIN_LOBBY -> joinLobby(messageFromClient);
                     case SET_PLAYER_TO_LOBBY -> setPlayerToLobby(messageFromClient);
                     case RENAME_LOBBY -> renameLobby(messageFromClient);
                     default -> System.out.println("Unknown message type " + messageType);
@@ -147,6 +148,10 @@ public class ClientHandler extends Thread {
         }
     }
 
+    /**
+     * Logs the player out of the account
+     * @param messageFromClient
+     */
     private void logOutPlayer(ServerMessage messageFromClient){
         String playerName = (String) messageFromClient.getMessageData();
 
@@ -178,6 +183,10 @@ public class ClientHandler extends Thread {
         LobbyManager.setPlayerToLobby(decodedMessageData[0], decodedMessageData[1]);
     }
 
+    /**
+     * Tries to chang the lobby's name to a new name
+     * @param messageFromClient Message from the client, should contain the old name of the lobby and it's new one
+     */
     private void renameLobby(ServerMessage messageFromClient){
         String[] decodedMessageData = (String[]) messageFromClient.getMessageData();
         if(LobbyManager.renameLobby(decodedMessageData[0], decodedMessageData[1])){
@@ -185,6 +194,18 @@ public class ClientHandler extends Thread {
         }
         else {
             sendMessage(ServerMessageType.LOBBY_RENAME_FAIL);
+        }
+    }
+
+    private void joinLobby(ServerMessage messageFromClient){
+        String[] decodedMessage = (String[]) messageFromClient.getMessageData();
+
+        if(LobbyManager.getLobbyId(decodedMessage[1]) == null) {
+            sendMessage(ServerMessageType.JOIN_LOBBY_FAIL);
+        }
+        else {
+            setPlayerToLobby(messageFromClient);
+            sendMessage(ServerMessageType.JOIN_LOBBY_SUCCESS);
         }
     }
 }

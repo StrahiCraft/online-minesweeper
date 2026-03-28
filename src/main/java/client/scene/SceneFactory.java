@@ -208,7 +208,8 @@ public class SceneFactory {
         Button backButton = new Button("Back");
 
         joinGameButton.setOnMouseClicked(event -> {
-            // TODO join game if found
+            String[] messageData = { ClientApplication.getClientInstance().getPlayerName(), roomNameTextField.getText() };
+            ClientApplication.getClientInstance().sendMessage(ServerMessageType.JOIN_LOBBY, messageData);
         });
         backButton.setOnMouseClicked(event -> {
             SceneManager.changeScene(SceneType.MAIN_MENU);
@@ -279,6 +280,11 @@ public class SceneFactory {
         Button backButton = new Button("Back");
 
         setRoomNameButton.setOnMouseClicked(event -> {
+            if(roomNameTextField.getText().isEmpty()){
+                ClientApplication.getClientInstance().alert("Room rename", "Room name can not be empty!", Alert.AlertType.ERROR);
+                return;
+            }
+
             String[] messageData = { ClientApplication.getClientInstance().getCurrentLobbyName(), roomNameTextField.getText() };
 
             if(messageData[0].equals(messageData[1])){

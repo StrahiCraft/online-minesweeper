@@ -41,20 +41,30 @@ public class LobbyManager {
         DatabaseManager.executeUpdate("DELETE FROM lobby WHERE name = ?", parameters);
     }
 
+    public static void removePlayerFromLobby(String playerName){
+        setPlayerToLobby(playerName, "");
+    }
+
     public static void setPlayerToLobby(String playerName, String lobbyName) {
+        Integer lobbyId = getLobbyId(lobbyName);
+        String[] newParameters = { playerName };
+        DatabaseManager.executeUpdate("UPDATE player SET lobby_id = " + lobbyId +  " WHERE username = ?", newParameters);
+    }
+
+    public static Integer getLobbyId(String lobbyName){
         String[] parameters = { lobbyName };
         ResultSet resultSet = DatabaseManager.executeQuery("SELECT * FROM lobby WHERE name = ?", parameters);
-
+        Integer lobbyId = null;
         try{
             if (resultSet.next()){
-                int lobbyId = resultSet.getInt("lobby_id");
-                String[] newParameters = { playerName };
-                DatabaseManager.executeUpdate("UPDATE player SET lobby_id = " + lobbyId +  " WHERE username = ?", newParameters);
+                lobbyId = resultSet.getInt("lobby_id");
             }
         }
         catch (Exception e){
             e.printStackTrace();
         }
+
+        return lobbyId;
     }
 
     public static boolean renameLobby(String oldName, String newName){
