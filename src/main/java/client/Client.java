@@ -43,6 +43,9 @@ public class Client extends Thread {
      */
     private String potentialLobbyName;
 
+    /**
+     * Data of the lobby this client is currently in
+     */
     private LobbyData currentLobbyData;
 
     /**
@@ -194,6 +197,7 @@ public class Client extends Thread {
                             break;
                         case CREATE_LOBBY_SUCCESS:
                             currentLobbyData = (LobbyData) receivedMessage.getMessageData();
+                            System.out.println(currentLobbyData);
                             Platform.runLater(() -> SceneManager.changeScene(SceneType.HOST));
                             String[] messageData = { playerName, currentLobbyName };
                             sendMessage(ServerMessageType.SET_PLAYER_TO_LOBBY, messageData);

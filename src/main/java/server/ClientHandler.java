@@ -22,6 +22,10 @@ public class ClientHandler extends Thread {
      * Unique id given to the client upon connection with the server, the id is assigned by the server
      */
     private final UUID clientId;
+    /**
+     * Username of the currently logged in account on this client
+     */
+    private String clientAccountUsername;
 
     /**
      * Output stream for sending objects to the client from the server
@@ -121,6 +125,7 @@ public class ClientHandler extends Thread {
 
         if(AccountValidation.validRegistration(registerData[0], registerData[1])){
             DatabaseManager.executeUpdate("INSERT INTO Player(`username`, `password`) VALUES (?, ?)", registerData);
+            clientAccountUsername = registerData[0];
             sendMessage(ServerMessageType.REGISTER_SUCCESS, registerData[0]);
         }
         else {
@@ -140,6 +145,7 @@ public class ClientHandler extends Thread {
         if(AccountValidation.validLogin(loginData[0], loginData[1])){
             if(AccountValidation.notAlreadyLoggedIn(loginData[0])){
                 AccountValidation.setLoggedIn(loginData[0], true);
+                clientAccountUsername = loginData[0];
                 sendMessage(ServerMessageType.LOGIN_SUCCESS, loginData[0]);
                 return;
             }
@@ -157,6 +163,7 @@ public class ClientHandler extends Thread {
     private void logOutPlayer(ServerMessage messageFromClient){
         String playerName = (String) messageFromClient.getMessageData();
 
+        clientAccountUsername = "";
         AccountValidation.setLoggedIn(playerName, false);
     }
 
@@ -168,8 +175,7 @@ public class ClientHandler extends Thread {
         String lobbyName = (String) messageFromClient.getMessageData();
 
         if(LobbyManager.createLobby(lobbyName)){
-            ServerApplication.createLobbyData(clientId, lobbyName);
-            System.out.println(ServerApplication.getLobbyWithClient(clientId));
+            ServerApplication.createLobbyData(clientId, clientAccountUsername, lobbyName);
             sendMessage(ServerMessageType.CREATE_LOBBY_SUCCESS, ServerApplication.getLobbyWithClient(clientId));
         }
         else {
@@ -229,7 +235,7 @@ public class ClientHandler extends Thread {
         else {
             setPlayerToLobby(messageFromClient);
             LobbyData currentLobby = ServerApplication.getLobbyWithName(decodedMessageData[1]);
-            currentLobby.addPlayer(clientId);
+            currentLobby.addPlayer(clientId, clientAccountUsername);
             sendMessage(ServerMessageType.JOIN_LOBBY_SUCCESS);
 
             refreshLobby(currentLobby);
@@ -250,9 +256,17 @@ public class ClientHandler extends Thread {
         refreshLobby(currentLobby);
     }
 
+    /**
+     * Refreshes the lobby screen of all clients connected to the given lobby
+     * @param lobby Lobby from which the clients are given
+     */
     private void refreshLobby(LobbyData lobby){
         for(UUID clientId : lobby.getClients()){
             ServerApplication.getClientHandler(clientId).sendMessage(ServerMessageType.REFRESH_LOBBY, lobby);
         }
+    }
+
+    public String getClientAccountUsername() {
+        return clientAccountUsername;
     }
 }

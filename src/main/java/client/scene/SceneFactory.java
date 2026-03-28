@@ -273,8 +273,8 @@ public class SceneFactory {
         gameSettingsHBox.getChildren().addAll(widthSettingsVBox, heightSettingsVBox, mineCountVBox);
 
         ListView<String> playerList = new ListView<>();
-        for(UUID clientId : currentLobbyData.getClients()){
-            playerList.getItems().add(clientId.toString());
+        for(String clientName : currentLobbyData.getClientAccountNames()){
+            playerList.getItems().add(clientName);
         }
 
         Button startGameButton = new Button("Start Game");
@@ -340,16 +340,16 @@ public class SceneFactory {
 
         HBox gameSettingsHBox = new HBox();
 
-        Label boardWidthLabel = new Label("Board width: " + Integer.toString(currentLobbyData.getMinefieldWidth()));
-        Label boardHeightLabel = new Label("Board height: " + Integer.toString(currentLobbyData.getMinefieldHeight()));
+        Label boardWidthLabel = new Label("Board width: " + currentLobbyData.getMinefieldWidth());
+        Label boardHeightLabel = new Label("Board height: " + currentLobbyData.getMinefieldHeight());
 
-        Label mineCountLabel = new Label("Mine count: " + Integer.toString(currentLobbyData.getMineCount()));
+        Label mineCountLabel = new Label("Mine count: " + currentLobbyData.getMineCount());
 
         gameSettingsHBox.getChildren().addAll(boardWidthLabel, boardHeightLabel, mineCountLabel);
 
         ListView<String> playerList = new ListView<>();
-        for(UUID clientId : currentLobbyData.getClients()){
-            playerList.getItems().add(clientId.toString());
+        for(String clientName : currentLobbyData.getClientAccountNames()){
+            playerList.getItems().add(clientName);
         }
 
         Button backButton = new Button("Leave lobby");

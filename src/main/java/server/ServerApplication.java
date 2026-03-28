@@ -85,12 +85,12 @@ public class ServerApplication {
         }
     }
 
-    public static void createLobbyData(UUID hostId, String lobbyName){
-        lobbies.add(new LobbyData(hostId, lobbyName, 16, 16, 64));
+    public static void createLobbyData(UUID hostId, String hostName, String lobbyName){
+        lobbies.add(new LobbyData(hostId, hostName, lobbyName, 16, 16, 64));
     }
 
-    public static void deleteLobbyData(String lobbyname){
-        lobbies.remove(getLobbyWithName(lobbyname));
+    public static void deleteLobbyData(String lobbyName){
+        lobbies.remove(getLobbyWithName(lobbyName));
     }
 
     public static LobbyData getLobbyWithName(String lobbyName){

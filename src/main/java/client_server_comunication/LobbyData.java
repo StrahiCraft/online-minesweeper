@@ -6,14 +6,17 @@ import java.util.UUID;
 
 public class LobbyData implements Serializable {
     private ArrayList<UUID> clients;
+    private ArrayList<String> clientAccountNames;
     private String lobbyName;
     private int minefieldWidth;
     private int minefieldHeight;
     private int mineCount;
 
-    public LobbyData(UUID host, String lobbyName, int minefieldWidth, int minefieldHeight, int mineCount) {
+    public LobbyData(UUID host, String hostName, String lobbyName, int minefieldWidth, int minefieldHeight, int mineCount) {
         clients = new ArrayList<>();
         clients.add(host);
+        clientAccountNames = new ArrayList<>();
+        clientAccountNames.add(hostName);
 
         this.lobbyName = lobbyName;
         this.minefieldWidth = minefieldWidth;
@@ -33,11 +36,13 @@ public class LobbyData implements Serializable {
         return clients.contains(clientId);
     }
 
-    public void addPlayer(UUID clientId){
+    public void addPlayer(UUID clientId, String clientName){
         clients.add(clientId);
+        clientAccountNames.add(clientName);
     }
 
     public void removePlayer(UUID clientId){
+        clientAccountNames.remove(clients.indexOf(clientId));
         clients.remove(clientId);
     }
 
@@ -47,6 +52,14 @@ public class LobbyData implements Serializable {
 
     public void setClients(ArrayList<UUID> clients) {
         this.clients = clients;
+    }
+
+    public ArrayList<String> getClientAccountNames() {
+        return clientAccountNames;
+    }
+
+    public void setClientAccountNames(ArrayList<String> clientAccountNames) {
+        this.clientAccountNames = clientAccountNames;
     }
 
     public String getLobbyName() {
@@ -79,5 +92,17 @@ public class LobbyData implements Serializable {
 
     public void setMineCount(int mineCount) {
         this.mineCount = mineCount;
+    }
+
+    @Override
+    public String toString() {
+        return "LobbyData{" +
+                "clients=" + clients +
+                ", clientAccountNames=" + clientAccountNames +
+                ", lobbyName='" + lobbyName + '\'' +
+                ", minefieldWidth=" + minefieldWidth +
+                ", minefieldHeight=" + minefieldHeight +
+                ", mineCount=" + mineCount +
+                '}';
     }
 }
