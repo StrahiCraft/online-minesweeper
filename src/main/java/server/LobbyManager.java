@@ -36,21 +36,40 @@ public class LobbyManager {
         return false;
     }
 
+    /**
+     * Deletes the lobby from the database
+     * @param lobbyName Name of the lobby to delete
+     */
     public static void deleteLobby(String lobbyName){
         String[] parameters = { lobbyName };
         DatabaseManager.executeUpdate("DELETE FROM lobby WHERE name = ?", parameters);
     }
 
+    /**
+     * Removes a player from the lobby, when removing the player the lobby the player is in is set to NULL
+     * @param playerName Player to remove from the lobby
+     */
     public static void removePlayerFromLobby(String playerName){
         setPlayerToLobby(playerName, "");
     }
 
+    /**
+     * Sets the given player to the given lobby
+     * @param playerName Name of the player to set into the given lobby
+     * @param lobbyName Name of the lobby the player is being set to, an empty string sets the player's lobby
+     *                  to NULL
+     */
     public static void setPlayerToLobby(String playerName, String lobbyName) {
         Integer lobbyId = getLobbyId(lobbyName);
         String[] newParameters = { playerName };
         DatabaseManager.executeUpdate("UPDATE player SET lobby_id = " + lobbyId +  " WHERE username = ?", newParameters);
     }
 
+    /**
+     * Gets the lobby id from the lobby's name
+     * @param lobbyName Name of the lobby we are getting the id for
+     * @return The lobby's id or -1 if there is no lobby with the given name
+     */
     public static Integer getLobbyId(String lobbyName){
         String[] parameters = { lobbyName };
         ResultSet resultSet = DatabaseManager.executeQuery("SELECT * FROM lobby WHERE name = ?", parameters);
@@ -67,6 +86,12 @@ public class LobbyManager {
         return lobbyId;
     }
 
+    /**
+     * Changes the name of the lobby to a new one if a lobby with the new name doesn't already exist
+     * @param oldName Old name of the lobby, used to find the lobby database entry
+     * @param newName New name for the lobby
+     * @return True if the lobby name has been changed, false if not
+     */
     public static boolean renameLobby(String oldName, String newName){
         String[] oldNameParameter = { oldName };
         String[] newNameParameter = { newName };

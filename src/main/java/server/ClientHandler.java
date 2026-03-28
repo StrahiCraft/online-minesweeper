@@ -197,6 +197,11 @@ public class ClientHandler extends Thread {
         }
     }
 
+    /**
+     * Joins the given client to the given lobby
+     * @param messageFromClient Message from the client, should be the name of the client followed by the name of
+     *                          the lobby the client is joining
+     */
     private void joinLobby(ServerMessage messageFromClient){
         String[] decodedMessage = (String[]) messageFromClient.getMessageData();
 

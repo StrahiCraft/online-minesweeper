@@ -137,6 +137,12 @@ public class Client extends Thread {
         System.exit(0);
     }
 
+    /**
+     * Makes an alert to tell the user something
+     * @param headerText Title name of the alert
+     * @param containerText Alert message
+     * @param alertType Type of the alert
+     */
     public void alert(String headerText, String containerText, Alert.AlertType alertType){
         Platform.runLater(() -> {
             Alert alert = new Alert(alertType);
