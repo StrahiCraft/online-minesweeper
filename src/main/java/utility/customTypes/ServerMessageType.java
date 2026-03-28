@@ -10,8 +10,10 @@ public enum ServerMessageType {
 
     // LOGIN
     LOGIN,
+    LOG_OUT,
     LOGIN_SUCCESS,
     LOGIN_FAIL,
+    ALREADY_LOGGED_IN,
 
     // LOBBY CREATION
     CREATE_LOBBY,

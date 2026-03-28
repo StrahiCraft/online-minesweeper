@@ -90,6 +90,7 @@ public class ClientHandler extends Thread {
                     case QUIT -> ServerApplication.onPlayerDisconnected(messageFromClient.getClientId());
                     case REGISTER -> registerPlayer(messageFromClient);
                     case LOGIN -> loginPlayer(messageFromClient);
+                    case LOG_OUT -> logOutPlayer(messageFromClient);
                     case CREATE_LOBBY -> createLobby(messageFromClient);
                     case DELETE_LOBBY -> LobbyManager.deleteLobby((String) messageFromClient.getMessageData());
                     case SET_PLAYER_TO_LOBBY -> setPlayerToLobby(messageFromClient);
@@ -134,11 +135,22 @@ public class ClientHandler extends Thread {
         String[] loginData = (String[]) messageFromClient.getMessageData();
 
         if(AccountValidation.validLogin(loginData[0], loginData[1])){
-            sendMessage(ServerMessageType.LOGIN_SUCCESS, loginData[0]);
+            if(AccountValidation.notAlreadyLoggedIn(loginData[0])){
+                AccountValidation.setLoggedIn(loginData[0], true);
+                sendMessage(ServerMessageType.LOGIN_SUCCESS, loginData[0]);
+                return;
+            }
+            sendMessage(ServerMessageType.ALREADY_LOGGED_IN);
         }
         else {
             sendMessage(ServerMessageType.LOGIN_FAIL);
         }
+    }
+
+    private void logOutPlayer(ServerMessage messageFromClient){
+        String playerName = (String) messageFromClient.getMessageData();
+
+        AccountValidation.setLoggedIn(playerName, false);
     }
 
     /**

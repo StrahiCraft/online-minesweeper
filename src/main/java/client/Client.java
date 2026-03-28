@@ -115,10 +115,23 @@ public class Client extends Thread {
     }
 
     /**
+     * Logs the player out of their account
+     */
+    public void logOut(){
+        sendMessage(ServerMessageType.DELETE_LOBBY, currentLobbyName);
+        sendMessage(ServerMessageType.LOG_OUT, playerName);
+        SceneManager.changeScene(SceneType.LOGIN);
+        playerName = null;
+    }
+
+    /**
      * This function is called when the game is closed
      */
     public void onGameClosed(){
-        sendMessage(ServerMessageType.DELETE_LOBBY, currentLobbyName);
+        if(playerName != null){
+            logOut();
+        }
+
         sendMessage(ServerMessageType.QUIT);
         Thread.currentThread().interrupt();
         System.exit(0);
@@ -158,6 +171,9 @@ public class Client extends Thread {
                             currentLobbyName = playerName + "'s lobby";
                             Platform.runLater(() -> SceneManager.changeScene(SceneType.MAIN_MENU));
                             System.out.println("Player name: " + playerName);
+                            break;
+                        case ALREADY_LOGGED_IN:
+                            alert("Login error", "Already logged in!", Alert.AlertType.ERROR);
                             break;
                         case REGISTER_FAIL:
                             alert("Registration error", "User already exists!", Alert.AlertType.ERROR);
