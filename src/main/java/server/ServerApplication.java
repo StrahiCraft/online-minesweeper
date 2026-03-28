@@ -81,6 +81,7 @@ public class ServerApplication {
             catch (Exception e){
                 System.err.println(e.getMessage());
             }
+
             DatabaseManager.disconnect();
         }
     }

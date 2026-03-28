@@ -187,8 +187,10 @@ public class ClientHandler extends Thread {
         String lobbyName = (String) messageFromClient.getMessageData();
         LobbyData lobbyData = ServerApplication.getLobbyWithName(lobbyName);
 
-        for(UUID client : lobbyData.getClients()){
-            ServerApplication.getClientHandler(client).sendMessage(ServerMessageType.LOBBY_DISBANDED);
+        if(lobbyData != null){
+            for(UUID client : lobbyData.getClients()){
+                ServerApplication.getClientHandler(client).sendMessage(ServerMessageType.LOBBY_DISBANDED);
+            }
         }
 
         LobbyManager.deleteLobby(lobbyName);
