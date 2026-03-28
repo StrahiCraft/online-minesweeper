@@ -38,6 +38,8 @@ public class Client extends Thread {
      */
     private String currentLobbyName;
 
+    private String potentialLobbyName;
+
     /**
      * Output stream for sending objects to the server
      */
@@ -171,6 +173,13 @@ public class Client extends Thread {
                         case CREATE_LOBBY_FAIL:
                             alert("Lobby creation error", "Lobby creation failed!", Alert.AlertType.ERROR);
                             break;
+                        case LOBBY_RENAME_SUCCESS:
+                            currentLobbyName = potentialLobbyName;
+                            alert("Lobby rename", "Lobby renamed successfully!", Alert.AlertType.INFORMATION);
+                            break;
+                        case LOBBY_RENAME_FAIL:
+                            alert("Lobby rename", "Lobby with that name already exists!", Alert.AlertType.ERROR);
+                            break;
                         default:
                             break;
                     }
@@ -203,5 +212,13 @@ public class Client extends Thread {
 
     public void setCurrentLobbyName(String currentLobbyName) {
         this.currentLobbyName = currentLobbyName;
+    }
+
+    public String getPotentialLobbyName() {
+        return potentialLobbyName;
+    }
+
+    public void setPotentialLobbyName(String potentialLobbyName) {
+        this.potentialLobbyName = potentialLobbyName;
     }
 }

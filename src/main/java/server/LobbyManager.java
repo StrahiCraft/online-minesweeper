@@ -56,4 +56,27 @@ public class LobbyManager {
             e.printStackTrace();
         }
     }
+
+    public static boolean renameLobby(String oldName, String newName){
+        String[] oldNameParameter = { oldName };
+        String[] newNameParameter = { newName };
+        ResultSet oldLobby = DatabaseManager.executeQuery("SELECT * FROM lobby WHERE name = ?", oldNameParameter);
+        ResultSet lobbyWithNewName = DatabaseManager.executeQuery("SELECT * FROM lobby WHERE name = ?", newNameParameter);
+
+        try{
+            if (oldLobby.next()){
+                if(lobbyWithNewName.next()){
+                    return false;
+                }
+                int lobbyId = oldLobby.getInt("lobby_id");
+                String[] newParameters = { newName };
+                return DatabaseManager.executeUpdate("UPDATE lobby SET name = ? WHERE lobby_id = " + lobbyId, newParameters);
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return false;
+    }
 }

@@ -279,7 +279,15 @@ public class SceneFactory {
         Button backButton = new Button("Back");
 
         setRoomNameButton.setOnMouseClicked(event -> {
-            // TODO set room name
+            String[] messageData = { ClientApplication.getClientInstance().getCurrentLobbyName(), roomNameTextField.getText() };
+
+            if(messageData[0].equals(messageData[1])){
+                ClientApplication.getClientInstance().alert("Lobby rename", "Lobby name is already that!", Alert.AlertType.INFORMATION);
+                return;
+            }
+
+            ClientApplication.getClientInstance().setPotentialLobbyName(roomNameTextField.getText());
+            ClientApplication.getClientInstance().sendMessage(ServerMessageType.RENAME_LOBBY, messageData);
         });
         startGameButton.setOnMouseClicked(event -> {
             int boardWidth = Integer.parseInt(widthTextField.textProperty().getValue());

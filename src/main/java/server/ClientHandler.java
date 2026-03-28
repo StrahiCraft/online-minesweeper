@@ -93,6 +93,7 @@ public class ClientHandler extends Thread {
                     case CREATE_LOBBY -> createLobby(messageFromClient);
                     case DELETE_LOBBY -> LobbyManager.deleteLobby((String) messageFromClient.getMessageData());
                     case SET_PLAYER_TO_LOBBY -> setPlayerToLobby(messageFromClient);
+                    case RENAME_LOBBY -> renameLobby(messageFromClient);
                     default -> System.out.println("Unknown message type " + messageType);
                 }
             }
@@ -163,5 +164,15 @@ public class ClientHandler extends Thread {
     private void setPlayerToLobby(ServerMessage messageFromClient){
         String[] decodedMessageData = (String[]) messageFromClient.getMessageData();
         LobbyManager.setPlayerToLobby(decodedMessageData[0], decodedMessageData[1]);
+    }
+
+    private void renameLobby(ServerMessage messageFromClient){
+        String[] decodedMessageData = (String[]) messageFromClient.getMessageData();
+        if(LobbyManager.renameLobby(decodedMessageData[0], decodedMessageData[1])){
+            sendMessage(ServerMessageType.LOBBY_RENAME_SUCCESS);
+        }
+        else {
+            sendMessage(ServerMessageType.LOBBY_RENAME_FAIL);
+        }
     }
 }
