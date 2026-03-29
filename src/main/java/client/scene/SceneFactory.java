@@ -2,6 +2,7 @@ package client.scene;
 
 import client.ClientApplication;
 import client.rendering.MinefieldRenderer;
+import client_server_comunication.GameStatistics;
 import client_server_comunication.LobbyData;
 import game.minefield.MineFieldGenerator;
 import javafx.geometry.Pos;
@@ -179,6 +180,7 @@ public class SceneFactory {
         Button quitGameButton = new Button("Quit Game");
 
         statisticsButton.setOnMouseClicked(event -> {
+            ClientApplication.getClientInstance().sendMessage(ServerMessageType.REQUEST_STATISTICS, ClientApplication.getClientInstance().getPlayerUsername());
             SceneManager.changeScene(SceneType.STATISTICS);
         });
 
@@ -196,7 +198,7 @@ public class SceneFactory {
             SceneManager.close();
         });
 
-        root.getChildren().addAll(title, accountButton, hostGameButton, joinGameButton, quitGameButton);
+        root.getChildren().addAll(title, accountButton, hostGameButton, joinGameButton, statisticsButton, quitGameButton);
         root.setSpacing(10);
         root.setAlignment(Pos.CENTER);
 
@@ -212,13 +214,19 @@ public class SceneFactory {
 
         Label title = new Label("Statistics");
 
+        Label gamesPlayed = new Label("Games played: " + ClientApplication.getClientInstance().getPlayerStatistics().size());
+        Label winrate = new Label("Winrate: " + GameStatistics.calculateWinrate(ClientApplication.getClientInstance().getPlayerStatistics()) * 100 + "%");
+        Label averageWidth = new Label("Average width: " + GameStatistics.averageWidth(ClientApplication.getClientInstance().getPlayerStatistics()));
+        Label averageHeight = new Label("Average height: " + GameStatistics.averageHeight(ClientApplication.getClientInstance().getPlayerStatistics()));
+        Label averageMineCount = new Label("Average mine count: " + GameStatistics.averageMineCount(ClientApplication.getClientInstance().getPlayerStatistics()));
+
         Button backButton = new Button("Back");
 
         backButton.setOnMouseClicked(event -> {
             SceneManager.changeScene(SceneType.MAIN_MENU);
         });
 
-        root.getChildren().addAll(title, backButton);
+        root.getChildren().addAll(title, gamesPlayed, winrate, averageWidth, averageHeight, averageMineCount, backButton);
         root.setSpacing(10);
         root.setAlignment(Pos.CENTER);
 

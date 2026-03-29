@@ -1,5 +1,6 @@
 package server;
 
+import client_server_comunication.GameStatistics;
 import client_server_comunication.ServerMessage;
 import server.database.DatabaseManager;
 import client_server_comunication.LobbyData;
@@ -9,6 +10,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -109,12 +111,61 @@ public class ClientHandler extends Thread {
                     case GAME_LOST -> onGameLost(messageFromClient);
                     case GAME_WON -> onGameWon(messageFromClient);
                     case UPDATE_ACCOUNT -> updateAccount(messageFromClient);
+                    case REQUEST_STATISTICS -> requestStatistics(messageFromClient);
                     default -> System.out.println("Unknown message type " + messageType);
                 }
             }
             objectOutputStream.close();
             objectInputStream.close();
             clientSocket.close();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void requestStatistics(ServerMessage messageFromClient){
+        String username = (String) messageFromClient.getMessageData();
+
+        String[] usernameParameter = { username };
+        ResultSet usernameIndexResultSet = DatabaseManager.executeQuery("SELECT player_id FROM player WHERE username = ?", usernameParameter);
+
+        int playerIndex = -1;
+
+        try{
+            if(usernameIndexResultSet.next()){
+                playerIndex = usernameIndexResultSet.getInt("player_id");
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+        if(playerIndex == -1){
+            return;
+        }
+
+        String[] playerIndexParameter = { Integer.toString(playerIndex) };
+        ResultSet statisticsResultSet =
+                DatabaseManager.executeQuery("SELECT * FROM game " +
+                        "JOIN game_players ON game.game_id = game_players.game_id WHERE game_players.player_id = ?", playerIndexParameter);
+
+        try{
+            ArrayList<GameStatistics> playerStatistics = new ArrayList<>();
+
+            while (statisticsResultSet.next()){
+                GameStatistics gameStatistics = new GameStatistics();
+
+                gameStatistics.setBoardWidth(statisticsResultSet.getInt("board_width"));
+                gameStatistics.setBoardHeight(statisticsResultSet.getInt("board_height"));
+                gameStatistics.setMineCount(statisticsResultSet.getInt("mine_count"));
+
+                gameStatistics.setGameWon(statisticsResultSet.getInt("game_won") == 1);
+
+                playerStatistics.add(gameStatistics);
+            }
+
+            sendMessage(ServerMessageType.SEND_STATISTICS, playerStatistics);
         }
         catch (Exception e){
             e.printStackTrace();
@@ -344,6 +395,11 @@ public class ClientHandler extends Thread {
         }
     }
 
+    /**
+     * Inserts game results to the database for all the players in the given lobby
+     * @param lobbyData Data of the lobby that just finished a game
+     * @param won If the lobby won the game
+     */
     private void insertGameResult(LobbyData lobbyData, boolean won){
         String[] parameters = { Integer.toString(lobbyData.getMinefieldWidth()), Integer.toString(lobbyData.getMinefieldHeight()),
             Integer.toString(lobbyData.getMineCount()), won? "1" : "0"};

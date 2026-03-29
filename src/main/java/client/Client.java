@@ -2,6 +2,7 @@ package client;
 
 import client.scene.SceneManager;
 import client.scene.SceneType;
+import client_server_comunication.GameStatistics;
 import client_server_comunication.ServerMessage;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
@@ -10,6 +11,7 @@ import client_server_comunication.LobbyData;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class Client extends Thread {
@@ -40,6 +42,8 @@ public class Client extends Thread {
      * Password of the player connecting to the server through this client
      */
     private String playerPassword;
+
+    private ArrayList<GameStatistics> playerStatistics = new ArrayList<>();
 
     /**
      * Current name of the lobby this client is hosting
@@ -260,6 +264,10 @@ public class Client extends Thread {
                             alert("Account update", "Account update failed, username already in use", Alert.AlertType.ERROR);
                             Platform.runLater(SceneManager::refreshCurrentScene);
                             break;
+                        case SEND_STATISTICS:
+                            playerStatistics = (ArrayList<GameStatistics>) receivedMessage.getMessageData();
+                            Platform.runLater(SceneManager::refreshCurrentScene);
+                            break;
                         default:
                             break;
                     }
@@ -327,5 +335,13 @@ public class Client extends Thread {
 
     public void setPlayerPassword(String playerPassword) {
         this.playerPassword = playerPassword;
+    }
+
+    public ArrayList<GameStatistics> getPlayerStatistics() {
+        return playerStatistics;
+    }
+
+    public void setPlayerStatistics(ArrayList<GameStatistics> playerStatistics) {
+        this.playerStatistics = playerStatistics;
     }
 }
