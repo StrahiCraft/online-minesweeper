@@ -32,4 +32,9 @@ public enum ServerMessageType {
     LEAVE_LOBBY,
     REFRESH_LOBBY,
     LOBBY_DISBANDED,
+
+    // GAME
+    START_GAME,
+    REFRESH_GAME,
+    ON_GAME_STARTED
 }

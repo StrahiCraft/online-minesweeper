@@ -1,5 +1,7 @@
 package client_server_comunication;
 
+import game.minefield.Minefield;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -11,6 +13,8 @@ public class LobbyData implements Serializable {
     private int minefieldWidth;
     private int minefieldHeight;
     private int mineCount;
+
+    private Minefield minefield;
 
     public LobbyData(UUID host, String hostName, String lobbyName, int minefieldWidth, int minefieldHeight, int mineCount) {
         clients = new ArrayList<>();
@@ -92,6 +96,14 @@ public class LobbyData implements Serializable {
 
     public void setMineCount(int mineCount) {
         this.mineCount = mineCount;
+    }
+
+    public Minefield getMinefield() {
+        return minefield;
+    }
+
+    public void setMinefield(Minefield minefield) {
+        this.minefield = minefield;
     }
 
     @Override

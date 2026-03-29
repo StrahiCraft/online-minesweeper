@@ -1,13 +1,17 @@
 package game.minefield.fields;
 
+import client.ClientApplication;
+import client_server_comunication.ServerMessageType;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseButton;
 import utility.customTypes.Vector2Int;
 
+import java.io.Serializable;
+
 /**
  * Abstract class used for making all types of fields.
  */
-public abstract class Field {
+public abstract class Field implements Serializable {
     /**
      * Position of the field.
      */
@@ -16,7 +20,7 @@ public abstract class Field {
     /**
      * Determines if the field is discovered
      */
-    private boolean undiscovered = true;
+    protected boolean undiscovered = true;
     /**
      * Determines if the field is marked
      */
@@ -25,7 +29,7 @@ public abstract class Field {
     /**
      * Stores the data of this fields button. This is used for changing style at runtime.
      */
-    protected Button fieldGraphics;
+    protected transient Button fieldGraphics;
 
     /**
      * Default field constructor, sets field position to (0, 0).
@@ -54,6 +58,9 @@ public abstract class Field {
         fieldGraphics.getStyleClass().add("base-field");
         fieldGraphics.getStyleClass().add("undiscovered-field");
 
+        setMarkedGraphics();
+        setDiscoveredGraphics();
+
         fieldGraphics.setOnMouseClicked(event -> {
             if(event.getButton() == MouseButton.PRIMARY){
                 discoverField();
@@ -61,6 +68,8 @@ public abstract class Field {
             if(event.getButton() == MouseButton.SECONDARY){
                 toggleFieldMarked();
             }
+
+            ClientApplication.getClientInstance().sendMessage(ServerMessageType.REFRESH_GAME, ClientApplication.getClientInstance().getCurrentLobbyData());
         });
     }
 
@@ -92,6 +101,10 @@ public abstract class Field {
 
         marked = !marked;
 
+        setMarkedGraphics();
+    }
+
+    private void setMarkedGraphics(){
         if(marked){
             fieldGraphics.getStyleClass().add("marked-field");
             fieldGraphics.getStyleClass().remove("undiscovered-field");
@@ -107,15 +120,20 @@ public abstract class Field {
      */
     protected abstract void onFieldDiscovered();
 
+    protected abstract void setDiscoveredGraphics();
+
     /**
      * Gets field graphics (this fields button). Used for rendering.
      * @return The field graphics button
      */
     public Button getFieldGraphics(){
+        setupFieldButton();
         return fieldGraphics;
     }
 
     public Vector2Int getPosition() {
         return position;
     }
+
+
 }

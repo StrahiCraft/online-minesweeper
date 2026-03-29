@@ -102,6 +102,8 @@ public class ClientHandler extends Thread {
                     case JOIN_LOBBY -> joinLobby(messageFromClient);
                     case SET_PLAYER_TO_LOBBY -> setPlayerToLobby(messageFromClient);
                     case RENAME_LOBBY -> renameLobby(messageFromClient);
+                    case START_GAME -> startGame(messageFromClient);
+                    case REFRESH_GAME -> refreshLobby((LobbyData) messageFromClient.getMessageData());
                     default -> System.out.println("Unknown message type " + messageType);
                 }
             }
@@ -268,7 +270,11 @@ public class ClientHandler extends Thread {
         }
     }
 
-    public String getClientAccountUsername() {
-        return clientAccountUsername;
+    private void startGame(ServerMessage messageFromClient){
+        LobbyData newLobbyData = (LobbyData) messageFromClient.getMessageData();
+
+        for(UUID clientId : newLobbyData.getClients()){
+            ServerApplication.getClientHandler(clientId).sendMessage(ServerMessageType.ON_GAME_STARTED, newLobbyData);
+        }
     }
 }

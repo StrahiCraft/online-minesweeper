@@ -1,13 +1,13 @@
 package game.minefield;
 
-import game.GameManager;
 import game.minefield.fields.Field;
 import game.minefield.fields.Mine;
 import utility.customTypes.Vector2Int;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class Minefield {
+public class Minefield implements Serializable {
     /**
      * The dimensions of the minefield, they store how big it is
      */
@@ -23,7 +23,6 @@ public class Minefield {
     public Minefield() {
         dimensions = new Vector2Int(16, 16);
         minefield = new HashMap<>();
-        GameManager.setMinefield(this);
     }
 
     /**
@@ -34,7 +33,6 @@ public class Minefield {
     public Minefield(Vector2Int dimensions) {
         this.dimensions = dimensions;
         minefield = new HashMap<>();
-        GameManager.setMinefield(this);
     }
 
     /**
@@ -47,7 +45,6 @@ public class Minefield {
     public Minefield(Vector2Int dimensions, HashMap<String, Field> minefield) {
         this.dimensions = dimensions;
         this.minefield = minefield;
-        GameManager.setMinefield(this);
     }
 
     /**

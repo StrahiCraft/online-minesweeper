@@ -229,6 +229,9 @@ public class Client extends Thread {
                             sendMessage(ServerMessageType.SET_PLAYER_TO_LOBBY, message);
                             Platform.runLater(() -> SceneManager.changeScene(SceneType.MAIN_MENU));
                             break;
+                        case ON_GAME_STARTED:
+                            currentLobbyData = (LobbyData) receivedMessage.getMessageData();
+                            Platform.runLater(() -> SceneManager.changeScene(SceneType.GAME));
                         default:
                             break;
                     }

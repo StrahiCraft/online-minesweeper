@@ -3,7 +3,7 @@ package client.scene;
 import client.ClientApplication;
 import client.rendering.MinefieldRenderer;
 import client_server_comunication.LobbyData;
-import game.GameManager;
+import game.minefield.MineFieldGenerator;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -11,8 +11,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import client_server_comunication.ServerMessageType;
 import utility.customTypes.Vector2Int;
-
-import java.util.UUID;
 
 /**
  * Factory class made for storing scene templates and making instances using them
@@ -269,8 +267,35 @@ public class SceneFactory {
         mineCountTextField.setPromptText("Enter mine count (max 25% board coverage");
 
         mineCountVBox.getChildren().addAll(mineCountLabel, mineCountTextField);
+        Button updateSettingsButton = new Button("Update settings");
 
-        gameSettingsHBox.getChildren().addAll(widthSettingsVBox, heightSettingsVBox, mineCountVBox);
+        updateSettingsButton.setOnMouseClicked(event -> {
+            int boardWidth = Integer.parseInt(widthTextField.textProperty().getValue());
+            int boardHeight = Integer.parseInt(heightTextField.textProperty().getValue());
+            int mineCount = Integer.parseInt(mineCountTextField.textProperty().getValue());
+
+            if(boardWidth > 32 || boardWidth < 4){
+                ClientApplication.getClientInstance().alert("Minefield settings", "Minefield width must be between 4 and 32!", Alert.AlertType.WARNING);
+                return;
+            }
+
+            if(boardHeight > 32 || boardHeight < 4){
+                ClientApplication.getClientInstance().alert("Minefield settings", "Minefield height must be between 4 and 32!", Alert.AlertType.WARNING);
+                return;
+            }
+
+            if(mineCount < 1 || boardHeight > (boardWidth * boardHeight) / 4){
+                ClientApplication.getClientInstance().alert("Minefield settings", "Mine count must be between 1 and "
+                        + (boardWidth * boardHeight) / 4 + "!", Alert.AlertType.WARNING);
+                return;
+            }
+
+            currentLobbyData.setMinefield(MineFieldGenerator.generateMinefield(new Vector2Int(boardWidth, boardHeight), mineCount));
+            ClientApplication.getClientInstance().alert("Minefield settings", "Minefield settings updated", Alert.AlertType.INFORMATION);
+            ClientApplication.getClientInstance().sendMessage(ServerMessageType.REFRESH_LOBBY, currentLobbyData);
+        });
+
+        gameSettingsHBox.getChildren().addAll(widthSettingsVBox, heightSettingsVBox, mineCountVBox, updateSettingsButton);
 
         ListView<String> playerList = new ListView<>();
         for(String clientName : currentLobbyData.getClientAccountNames()){
@@ -278,7 +303,6 @@ public class SceneFactory {
         }
 
         Button startGameButton = new Button("Start Game");
-
         Button backButton = new Button("Disband lobby");
 
         backButton.setOnMouseClicked(event -> {
@@ -307,9 +331,26 @@ public class SceneFactory {
             int boardHeight = Integer.parseInt(heightTextField.textProperty().getValue());
             int mineCount = Integer.parseInt(mineCountTextField.textProperty().getValue());
 
-            // TODO catch illegal value exception
+            if(boardWidth > 32 || boardWidth < 4){
+                ClientApplication.getClientInstance().alert("Minefield settings", "Minefield width must be between 4 and 32!", Alert.AlertType.WARNING);
+                return;
+            }
 
-            GameManager.startGame(new Vector2Int(boardWidth, boardHeight), mineCount);
+            if(boardHeight > 32 || boardHeight < 4){
+                ClientApplication.getClientInstance().alert("Minefield settings", "Minefield height must be between 4 and 32!", Alert.AlertType.WARNING);
+                return;
+            }
+
+            if(mineCount < 1 || boardHeight > (boardWidth * boardHeight) / 4){
+                ClientApplication.getClientInstance().alert("Minefield settings", "Mine count must be between 1 and "
+                        + (boardWidth * boardHeight) / 4 + "!", Alert.AlertType.WARNING);
+                return;
+            }
+
+            currentLobbyData.setMinefield(MineFieldGenerator.generateMinefield(new Vector2Int(boardWidth, boardHeight), mineCount));
+            System.out.println(currentLobbyData.getMinefield());
+
+            ClientApplication.getClientInstance().sendMessage(ServerMessageType.START_GAME, ClientApplication.getClientInstance().getCurrentLobbyData());
         });
         backButton.setOnMouseClicked(event -> {
             ClientApplication.getClientInstance().sendMessage(ServerMessageType.DELETE_LOBBY, ClientApplication.getClientInstance().getCurrentLobbyName());
@@ -341,9 +382,9 @@ public class SceneFactory {
         HBox gameSettingsHBox = new HBox();
 
         Label boardWidthLabel = new Label("Board width: " + currentLobbyData.getMinefieldWidth());
-        Label boardHeightLabel = new Label("Board height: " + currentLobbyData.getMinefieldHeight());
+        Label boardHeightLabel = new Label("  Board height: " + currentLobbyData.getMinefieldHeight());
 
-        Label mineCountLabel = new Label("Mine count: " + currentLobbyData.getMineCount());
+        Label mineCountLabel = new Label("  Mine count: " + currentLobbyData.getMineCount());
 
         gameSettingsHBox.getChildren().addAll(boardWidthLabel, boardHeightLabel, mineCountLabel);
 
@@ -377,7 +418,7 @@ public class SceneFactory {
     public static Scene getGameScene() {
         VBox root = new VBox();
 
-        root.getChildren().add(MinefieldRenderer.renderMinefield(GameManager.getMinefield()));
+        root.getChildren().add(MinefieldRenderer.renderMinefield(ClientApplication.getClientInstance().getCurrentLobbyData().getMinefield()));
         root.setSpacing(10);
         root.setAlignment(Pos.CENTER);
 

@@ -1,6 +1,6 @@
 package game.minefield.fields;
 
-import game.GameManager;
+import client.ClientApplication;
 import utility.customTypes.Vector2Int;
 
 /**
@@ -38,10 +38,20 @@ public class EmptyField extends Field {
     protected void onFieldDiscovered() {
         fieldGraphics.getStyleClass().remove("undiscovered-field");
 
+        if(surroundingMinesCount == 0){
+            ClientApplication.getClientInstance().getCurrentLobbyData().getMinefield().discoverSurroundingFields(getPosition());
+        }
+    }
+
+    @Override
+    protected void setDiscoveredGraphics() {
+        if(undiscovered){
+            return;
+        }
+
         switch (surroundingMinesCount){
             case 0:
                 fieldGraphics.getStyleClass().add("empty-field");
-                GameManager.getMinefield().discoverSurroundingFields(getPosition());
                 break;
             case 1:
                 fieldGraphics.getStyleClass().add("one-mine");
