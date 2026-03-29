@@ -10,7 +10,6 @@ public enum SceneType {
     HOST,
     LOBBY,
     JOIN,
-    STATISTICS,
     GAME,
     ACCOUNT,
 }

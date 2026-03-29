@@ -162,8 +162,8 @@ public class SceneFactory {
 
 
     /**
-     * Creates an instance of the main menu scene. This scene can either go to the host game scene or the join
-     * game scene. You can also close the game from this scene.
+     * Creates an instance of the main menu scene. This scene can either go to the host game scene, the join
+     * game scene or the account scene. You can also close the game from this scene.
      * @return
      * An instance of the created scene
      */
@@ -175,15 +175,10 @@ public class SceneFactory {
         Button accountButton = new Button("Account");
         Button hostGameButton = new Button("Host Game");
         Button joinGameButton = new Button("Join Game");
-        Button statisticsButton = new Button("Statistics");
         Button quitGameButton = new Button("Quit Game");
 
         accountButton.setOnMouseClicked(event -> {
             SceneManager.changeScene(SceneType.ACCOUNT);
-        });
-
-        statisticsButton.setOnMouseClicked(event -> {
-            SceneManager.changeScene(SceneType.STATISTICS);
         });
 
         hostGameButton.setOnMouseClicked(event -> {
@@ -196,7 +191,7 @@ public class SceneFactory {
             SceneManager.close();
         });
 
-        root.getChildren().addAll(title, accountButton, hostGameButton, joinGameButton, statisticsButton, quitGameButton);
+        root.getChildren().addAll(title, accountButton, hostGameButton, joinGameButton, quitGameButton);
         root.setSpacing(10);
         root.setAlignment(Pos.CENTER);
 
@@ -206,6 +201,10 @@ public class SceneFactory {
         return scene;
     }
 
+    /**
+     * Creates an instance of the account scene. In this scene you can log out or change your account details.
+     * @return An instance of the created scene
+     */
     public static Scene getAccountScene(){
         VBox root = new VBox();
 
@@ -241,12 +240,6 @@ public class SceneFactory {
         root.getChildren().addAll(title, usernameLabel, usernameField, passwordLabel, passwordField, updateAccountButton, logOutButton, backButton);
         root.setSpacing(10);
         root.setAlignment(Pos.CENTER);
-
-        return new Scene(root, resolution.getX(), resolution.getY());
-    }
-
-    public static Scene getStatisticsScene(){
-        VBox root = new VBox();
 
         return new Scene(root, resolution.getX(), resolution.getY());
     }
