@@ -137,6 +137,10 @@ public abstract class Field implements Serializable {
         return fieldGraphics;
     }
 
+    /**
+     * Checks if this field has been discovered
+     * @return True if discovered, false if not
+     */
     public boolean discovered(){
         return !undiscovered;
     }

@@ -2,7 +2,6 @@ package game.minefield.fields;
 
 import client.ClientApplication;
 import client_server_comunication.ServerMessageType;
-import server.ClientHandler;
 import utility.customTypes.Vector2Int;
 
 /**

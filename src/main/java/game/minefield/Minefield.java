@@ -154,6 +154,10 @@ public class Minefield implements Serializable {
         }
     }
 
+    /**
+     * Checks if the minefield is cleared
+     * @return True if the minefield is cleared, false otherwise
+     */
     public boolean minefieldCleared(){
         int count = 0;
         for(Field currentField : minefield.values()){
