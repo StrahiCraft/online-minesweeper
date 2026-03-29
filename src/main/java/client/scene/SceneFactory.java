@@ -208,7 +208,10 @@ public class SceneFactory {
         return scene;
     }
 
-
+    /**
+     * Creates an instance of the statistics scene, here the player can see statistics from all the games they have played
+     * @return An instance of the created scene
+     */
     public static Scene getStatisticsScene(){
         VBox root = new VBox();
 
