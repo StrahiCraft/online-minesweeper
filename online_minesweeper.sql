@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 29, 2026 at 05:48 PM
+-- Generation Time: Mar 29, 2026 at 05:47 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,6 +20,32 @@ SET time_zone = "+00:00";
 --
 -- Database: `online_minesweeper`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `game`
+--
+
+CREATE TABLE `game` (
+  `game_id` int(11) NOT NULL,
+  `board_width` int(11) NOT NULL,
+  `board_height` int(11) NOT NULL,
+  `mine_count` int(11) NOT NULL,
+  `game_won` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `game_players`
+--
+
+CREATE TABLE `game_players` (
+  `game_player_id` int(11) NOT NULL,
+  `player_id` int(11) NOT NULL,
+  `game_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -60,6 +86,20 @@ INSERT INTO `player` (`player_id`, `username`, `password`, `logged_in`, `lobby_i
 --
 
 --
+-- Indexes for table `game`
+--
+ALTER TABLE `game`
+  ADD PRIMARY KEY (`game_id`);
+
+--
+-- Indexes for table `game_players`
+--
+ALTER TABLE `game_players`
+  ADD PRIMARY KEY (`game_player_id`),
+  ADD KEY `player_id` (`player_id`),
+  ADD KEY `game_id` (`game_id`);
+
+--
 -- Indexes for table `lobby`
 --
 ALTER TABLE `lobby`
@@ -78,6 +118,18 @@ ALTER TABLE `player`
 --
 
 --
+-- AUTO_INCREMENT for table `game`
+--
+ALTER TABLE `game`
+  MODIFY `game_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `game_players`
+--
+ALTER TABLE `game_players`
+  MODIFY `game_player_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `lobby`
 --
 ALTER TABLE `lobby`
@@ -92,6 +144,13 @@ ALTER TABLE `player`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `game_players`
+--
+ALTER TABLE `game_players`
+  ADD CONSTRAINT `game_id` FOREIGN KEY (`game_id`) REFERENCES `game` (`game_id`),
+  ADD CONSTRAINT `player_id` FOREIGN KEY (`player_id`) REFERENCES `player` (`player_id`);
 
 --
 -- Constraints for table `player`
