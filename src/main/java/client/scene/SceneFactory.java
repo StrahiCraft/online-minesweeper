@@ -290,9 +290,13 @@ public class SceneFactory {
                 return;
             }
 
+            currentLobbyData.setMinefieldWidth(boardWidth);
+            currentLobbyData.setMinefieldHeight(boardHeight);
+            currentLobbyData.setMineCount(mineCount);
+
             currentLobbyData.setMinefield(MineFieldGenerator.generateMinefield(new Vector2Int(boardWidth, boardHeight), mineCount));
             ClientApplication.getClientInstance().alert("Minefield settings", "Minefield settings updated", Alert.AlertType.INFORMATION);
-            ClientApplication.getClientInstance().sendMessage(ServerMessageType.REFRESH_LOBBY, currentLobbyData);
+            ClientApplication.getClientInstance().sendMessage(ServerMessageType.REFRESH_GAME, currentLobbyData);
         });
 
         gameSettingsHBox.getChildren().addAll(widthSettingsVBox, heightSettingsVBox, mineCountVBox, updateSettingsButton);

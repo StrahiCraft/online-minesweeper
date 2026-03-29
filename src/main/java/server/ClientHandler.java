@@ -185,6 +185,10 @@ public class ClientHandler extends Thread {
         }
     }
 
+    /**
+     * Deletes a lobby from the database and disconnects all clients that were connected to it from the lobby (it sends them to the main menu)
+     * @param messageFromClient Message from the client, should be the name of the lobby being deleted
+     */
     public void deleteLobby(ServerMessage messageFromClient){
         String lobbyName = (String) messageFromClient.getMessageData();
         LobbyData lobbyData = ServerApplication.getLobbyWithName(lobbyName);
@@ -270,6 +274,11 @@ public class ClientHandler extends Thread {
         }
     }
 
+    /**
+     * Starts the game to all clients in the given lobby
+     * @param messageFromClient Message from the client, should be the data of the lobby containing the minefieeld the game
+     *                          will be played on
+     */
     private void startGame(ServerMessage messageFromClient){
         LobbyData newLobbyData = (LobbyData) messageFromClient.getMessageData();
 
