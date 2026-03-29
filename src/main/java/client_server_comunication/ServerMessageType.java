@@ -2,6 +2,12 @@ package client_server_comunication;
 
 public enum ServerMessageType {
     QUIT,
+    REQUEST_STATISTICS,
+
+    // ACCOUNT MANAGEMENT
+    UPDATE_ACCOUNT,
+    UPDATE_ACCOUNT_SUCCESS,
+    UPDATE_ACCOUNT_FAIL,
 
     // REGISTRATION
     REGISTER,

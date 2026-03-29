@@ -73,6 +73,7 @@ public class SceneFactory {
         login.setOnMouseClicked(event -> {
             String[] loginData = { username.getText(), password.getText() };
             ClientApplication.getClientInstance().sendMessage(ServerMessageType.LOGIN, loginData);
+            ClientApplication.getClientInstance().setPlayerPassword(password.getText());
         });
         register.setOnMouseClicked(event -> {
             SceneManager.changeScene(SceneType.REGISTER);
@@ -139,6 +140,7 @@ public class SceneFactory {
             if(password.getText().equals(confirmPassword.getText())){
                 String[] registerData = { username.getText(), password.getText() };
                 ClientApplication.getClientInstance().sendMessage(ServerMessageType.REGISTER, registerData);
+                ClientApplication.getClientInstance().setPlayerPassword(password.getText());
                 return;
             }
             ClientApplication.getClientInstance().alert("Registration error",
@@ -170,9 +172,19 @@ public class SceneFactory {
 
         Label title = new Label("Online Minesweeper");
 
+        Button accountButton = new Button("Account");
         Button hostGameButton = new Button("Host Game");
         Button joinGameButton = new Button("Join Game");
+        Button statisticsButton = new Button("Statistics");
         Button quitGameButton = new Button("Quit Game");
+
+        accountButton.setOnMouseClicked(event -> {
+            SceneManager.changeScene(SceneType.ACCOUNT);
+        });
+
+        statisticsButton.setOnMouseClicked(event -> {
+            SceneManager.changeScene(SceneType.STATISTICS);
+        });
 
         hostGameButton.setOnMouseClicked(event -> {
             ClientApplication.getClientInstance().sendMessage(ServerMessageType.CREATE_LOBBY, ClientApplication.getClientInstance().getCurrentLobbyName());
@@ -184,7 +196,7 @@ public class SceneFactory {
             SceneManager.close();
         });
 
-        root.getChildren().addAll(title, hostGameButton, joinGameButton, quitGameButton);
+        root.getChildren().addAll(title, accountButton, hostGameButton, joinGameButton, statisticsButton, quitGameButton);
         root.setSpacing(10);
         root.setAlignment(Pos.CENTER);
 
@@ -192,6 +204,51 @@ public class SceneFactory {
         scene.getStylesheets().add(SceneFactory.class.getResource("/style/style.css").toExternalForm());
 
         return scene;
+    }
+
+    public static Scene getAccountScene(){
+        VBox root = new VBox();
+
+        Label title = new Label("Account");
+
+        Label usernameLabel = new Label("Username");
+        TextField usernameField = new TextField(ClientApplication.getClientInstance().getPlayerUsername());
+        Label passwordLabel = new Label("Password");
+        TextField passwordField = new TextField(ClientApplication.getClientInstance().getPlayerPassword());
+
+        Button updateAccountButton = new Button("Update account");
+        Button logOutButton = new Button("Log out");
+        Button backButton = new Button("Back");
+
+        backButton.setOnMouseClicked(event -> {
+            SceneManager.changeScene(SceneType.MAIN_MENU);
+        });
+
+        updateAccountButton.setOnMouseClicked(event -> {
+            if(usernameField.getText().isEmpty() || usernameField.getText().isEmpty()){
+                ClientApplication.getClientInstance().alert("Account update", "Username and password can't be empty!", Alert.AlertType.ERROR);
+                return;
+            }
+
+            String[] accountData = { ClientApplication.getClientInstance().getPlayerUsername(), usernameField.getText(), passwordField.getText() };
+            ClientApplication.getClientInstance().sendMessage(ServerMessageType.UPDATE_ACCOUNT, accountData);
+        });
+
+        logOutButton.setOnMouseClicked(event -> {
+            ClientApplication.getClientInstance().logOut();
+        });
+
+        root.getChildren().addAll(title, usernameLabel, usernameField, passwordLabel, passwordField, updateAccountButton, logOutButton, backButton);
+        root.setSpacing(10);
+        root.setAlignment(Pos.CENTER);
+
+        return new Scene(root, resolution.getX(), resolution.getY());
+    }
+
+    public static Scene getStatisticsScene(){
+        VBox root = new VBox();
+
+        return new Scene(root, resolution.getX(), resolution.getY());
     }
 
     /**
@@ -210,7 +267,7 @@ public class SceneFactory {
         Button backButton = new Button("Back");
 
         joinGameButton.setOnMouseClicked(event -> {
-            String[] messageData = { ClientApplication.getClientInstance().getPlayerName(), roomNameTextField.getText() };
+            String[] messageData = { ClientApplication.getClientInstance().getPlayerUsername(), roomNameTextField.getText() };
             ClientApplication.getClientInstance().sendMessage(ServerMessageType.JOIN_LOBBY, messageData);
         });
         backButton.setOnMouseClicked(event -> {
@@ -412,7 +469,7 @@ public class SceneFactory {
         Button backButton = new Button("Leave lobby");
 
         backButton.setOnMouseClicked(event -> {
-            ClientApplication.getClientInstance().sendMessage(ServerMessageType.LEAVE_LOBBY, ClientApplication.getClientInstance().getPlayerName());
+            ClientApplication.getClientInstance().sendMessage(ServerMessageType.LEAVE_LOBBY, ClientApplication.getClientInstance().getPlayerUsername());
             SceneManager.changeScene(SceneType.MAIN_MENU);
         });
 

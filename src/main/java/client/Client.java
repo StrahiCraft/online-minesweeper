@@ -35,7 +35,11 @@ public class Client extends Thread {
     /**
      * Name of the player connecting to the server through this client
      */
-    private String playerName;
+    private String playerUsername;
+    /**
+     * Password of the player connecting to the server through this client
+     */
+    private String playerPassword;
 
     /**
      * Current name of the lobby this client is hosting
@@ -130,16 +134,16 @@ public class Client extends Thread {
      */
     public void logOut(){
         sendMessage(ServerMessageType.DELETE_LOBBY, currentLobbyName);
-        sendMessage(ServerMessageType.LOG_OUT, playerName);
+        sendMessage(ServerMessageType.LOG_OUT, playerUsername);
         SceneManager.changeScene(SceneType.LOGIN);
-        playerName = null;
+        playerUsername = null;
     }
 
     /**
      * This function is called when the game is closed
      */
     public void onGameClosed(){
-        if(playerName != null){
+        if(playerUsername != null){
             logOut();
         }
 
@@ -184,10 +188,10 @@ public class Client extends Thread {
                     switch (receivedMessage.getMessageType()){
                         case REGISTER_SUCCESS:
                         case LOGIN_SUCCESS:
-                            playerName = (String) receivedMessage.getMessageData();
+                            playerUsername = (String) receivedMessage.getMessageData();
                             resetLobbyName();
                             Platform.runLater(() -> SceneManager.changeScene(SceneType.MAIN_MENU));
-                            System.out.println("Player name: " + playerName);
+                            System.out.println("Player name: " + playerUsername);
                             break;
                         case ALREADY_LOGGED_IN:
                             alert("Login error", "Already logged in!", Alert.AlertType.ERROR);
@@ -202,7 +206,7 @@ public class Client extends Thread {
                             currentLobbyData = (LobbyData) receivedMessage.getMessageData();
                             System.out.println(currentLobbyData);
                             Platform.runLater(() -> SceneManager.changeScene(SceneType.HOST));
-                            String[] messageData = { playerName, currentLobbyName };
+                            String[] messageData = {playerUsername, currentLobbyName };
                             sendMessage(ServerMessageType.SET_PLAYER_TO_LOBBY, messageData);
                             break;
                         case CREATE_LOBBY_FAIL:
@@ -228,7 +232,7 @@ public class Client extends Thread {
                             break;
                         case LOBBY_DISBANDED:
                             currentLobbyData = null;
-                            String[] message = { playerName, "" };
+                            String[] message = {playerUsername, "" };
                             sendMessage(ServerMessageType.SET_PLAYER_TO_LOBBY, message);
                             Platform.runLater(() -> SceneManager.changeScene(SceneType.MAIN_MENU));
                             break;
@@ -245,6 +249,16 @@ public class Client extends Thread {
                             currentLobbyData = (LobbyData) receivedMessage.getMessageData();
                             alert("Game result", "You have won the game", Alert.AlertType.INFORMATION);
                             Platform.runLater(SceneManager::goToPreviousSceneType);
+                            break;
+                        case UPDATE_ACCOUNT_SUCCESS:
+                            String[] account = (String[])receivedMessage.getMessageData();
+                            playerUsername = account[0];
+                            playerPassword = account[1];
+                            alert("Account update", "Account updated", Alert.AlertType.INFORMATION);
+                            break;
+                        case UPDATE_ACCOUNT_FAIL:
+                            alert("Account update", "Account update failed, username already in use", Alert.AlertType.ERROR);
+                            Platform.runLater(SceneManager::refreshCurrentScene);
                             break;
                         default:
                             break;
@@ -272,15 +286,15 @@ public class Client extends Thread {
      * Resets the lobby name to the default (player's lobby, where player is replaced with the current player's name)
      */
     public void resetLobbyName(){
-        currentLobbyName = playerName + "'s lobby";
+        currentLobbyName = playerUsername + "'s lobby";
     }
 
-    public String getPlayerName() {
-        return playerName;
+    public String getPlayerUsername() {
+        return playerUsername;
     }
 
-    public void setPlayerName(String playerName) {
-        this.playerName = playerName;
+    public void setPlayerUsername(String playerUsername) {
+        this.playerUsername = playerUsername;
     }
 
     public String getCurrentLobbyName() {
@@ -305,5 +319,13 @@ public class Client extends Thread {
 
     public void setCurrentLobbyData(LobbyData currentLobbyData) {
         this.currentLobbyData = currentLobbyData;
+    }
+
+    public String getPlayerPassword() {
+        return playerPassword;
+    }
+
+    public void setPlayerPassword(String playerPassword) {
+        this.playerPassword = playerPassword;
     }
 }

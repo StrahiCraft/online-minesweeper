@@ -32,6 +32,28 @@ public class AccountValidation {
     }
 
     /**
+     * Checks if the given account exists
+     * @param username Username we are checking for
+     * @return True if an account with the given name is found, false if not
+     */
+    public static boolean accountExists(String username){
+        String[] parameter = { username };
+        ResultSet resultSet = DatabaseManager.executeQuery("SELECT * FROM player WHERE username = ?", parameter);
+        boolean exists = false;
+
+        try{
+            if (resultSet.next()){
+                exists = true;
+            }
+        }
+        catch (Exception e){
+            System.out.println("Error with fetching account");
+        }
+
+        return exists;
+    }
+
+    /**
      * Sets the given user to be either logged in or not based on the given value
      * @param username Username we are setting to be logged in or not in the database
      * @param value The value of logged in we are setting

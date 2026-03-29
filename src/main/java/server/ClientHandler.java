@@ -8,6 +8,7 @@ import client_server_comunication.ServerMessageType;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.UUID;
 
 /**
@@ -106,6 +107,7 @@ public class ClientHandler extends Thread {
                     case REFRESH_GAME -> refreshLobby((LobbyData) messageFromClient.getMessageData());
                     case GAME_LOST -> onGameLost(messageFromClient);
                     case GAME_WON -> onGameWon(messageFromClient);
+                    case UPDATE_ACCOUNT -> updateAccount(messageFromClient);
                     default -> System.out.println("Unknown message type " + messageType);
                 }
             }
@@ -115,6 +117,30 @@ public class ClientHandler extends Thread {
         }
         catch (Exception e){
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Updates account details (username and password) for the account with the given username
+     * @param messageFromClient Message from the client, should contain the old username, the new one and the new password
+     */
+    private void updateAccount(ServerMessage messageFromClient){
+        String[] accountDetails = (String[]) messageFromClient.getMessageData();
+
+        System.out.println(Arrays.toString(accountDetails));
+
+        if(!AccountValidation.accountExists(accountDetails[1]) || accountDetails[0].equals(accountDetails[1])){
+            String[] newAccountDetails = { accountDetails[1], accountDetails[2], accountDetails[0] };
+            if(DatabaseManager.executeUpdate("UPDATE player SET username = ?, password = ? WHERE username = ?", newAccountDetails)){
+                String[] updatedAccountDetails = { accountDetails[1], accountDetails[2] };
+                sendMessage(ServerMessageType.UPDATE_ACCOUNT_SUCCESS, updatedAccountDetails);
+            }
+            else {
+                sendMessage(ServerMessageType.UPDATE_ACCOUNT_FAIL);
+            }
+        }
+        else {
+            sendMessage(ServerMessageType.UPDATE_ACCOUNT_FAIL);
         }
     }
 

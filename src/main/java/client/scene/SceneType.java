@@ -11,5 +11,6 @@ public enum SceneType {
     LOBBY,
     JOIN,
     STATISTICS,
-    GAME
+    GAME,
+    ACCOUNT,
 }
