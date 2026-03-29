@@ -135,7 +135,7 @@ public class ServerApplication {
 
     /**
      * Removes client data from the list of connected clients after the client disconnects
-     * @param clientId Id of the client that has just disconnected
+     * @param clientId ID of the client that has just disconnected
      */
     public static void onClientDisconnected(UUID clientId){
         System.out.println("Client " + clientId + " has disconnected!");

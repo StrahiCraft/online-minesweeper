@@ -1,5 +1,8 @@
 package game.minefield.fields;
 
+import client.ClientApplication;
+import client_server_comunication.ServerMessageType;
+import server.ClientHandler;
 import utility.customTypes.Vector2Int;
 
 /**
@@ -28,7 +31,7 @@ public class Mine extends Field{
     @Override
     protected void onFieldDiscovered() {
         setDiscoveredGraphics();
-        // TODO lose game
+        ClientApplication.getClientInstance().sendMessage(ServerMessageType.GAME_LOST, ClientApplication.getClientInstance().getCurrentLobbyData());
     }
 
     /**

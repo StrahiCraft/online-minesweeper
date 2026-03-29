@@ -36,5 +36,7 @@ public enum ServerMessageType {
     // GAME
     START_GAME,
     REFRESH_GAME,
-    ON_GAME_STARTED
+    ON_GAME_STARTED,
+    GAME_LOST,
+    GAME_WON,
 }

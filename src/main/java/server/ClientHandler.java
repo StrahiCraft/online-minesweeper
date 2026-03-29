@@ -104,6 +104,8 @@ public class ClientHandler extends Thread {
                     case RENAME_LOBBY -> renameLobby(messageFromClient);
                     case START_GAME -> startGame(messageFromClient);
                     case REFRESH_GAME -> refreshLobby((LobbyData) messageFromClient.getMessageData());
+                    case GAME_LOST -> onGameLost(messageFromClient);
+                    case GAME_WON -> onGameWon(messageFromClient);
                     default -> System.out.println("Unknown message type " + messageType);
                 }
             }
@@ -284,6 +286,22 @@ public class ClientHandler extends Thread {
 
         for(UUID clientId : newLobbyData.getClients()){
             ServerApplication.getClientHandler(clientId).sendMessage(ServerMessageType.ON_GAME_STARTED, newLobbyData);
+        }
+    }
+
+    private void onGameLost(ServerMessage messageFromClient){
+        LobbyData newLobbyData = (LobbyData) messageFromClient.getMessageData();
+
+        for(UUID clientId : newLobbyData.getClients()){
+            ServerApplication.getClientHandler(clientId).sendMessage(ServerMessageType.GAME_LOST, newLobbyData);
+        }
+    }
+
+    private void onGameWon(ServerMessage messageFromClient){
+        LobbyData newLobbyData = (LobbyData) messageFromClient.getMessageData();
+
+        for(UUID clientId : newLobbyData.getClients()){
+            ServerApplication.getClientHandler(clientId).sendMessage(ServerMessageType.GAME_WON, newLobbyData);
         }
     }
 }

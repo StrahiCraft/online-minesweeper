@@ -16,6 +16,7 @@ public class SceneManager {
      * The type of the currently displayed scene
      */
     private static SceneType currentSceneType;
+    private static SceneType previousSceneType = SceneType.MAIN_MENU;
 
     /**
      * Sets the stage that will be used for changing scenes. Only call this function once to set up the scene manager.
@@ -32,6 +33,9 @@ public class SceneManager {
      * The type of scene that will be set.
      */
     public static void changeScene(SceneType sceneType) {
+        if(sceneType != currentSceneType){
+            previousSceneType = currentSceneType;
+        }
         currentSceneType = sceneType;
         switch (sceneType) {
             case LOGIN -> mainStage.setScene(SceneFactory.getLoginScene());
@@ -43,6 +47,10 @@ public class SceneManager {
             case GAME -> mainStage.setScene(SceneFactory.getGameScene());
             default -> System.out.println("Scene doesn't exist!");
         }
+    }
+
+    public static void goToPreviousSceneType(){
+        changeScene(previousSceneType);
     }
 
     /**

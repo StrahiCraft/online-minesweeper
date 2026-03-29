@@ -235,6 +235,17 @@ public class Client extends Thread {
                         case ON_GAME_STARTED:
                             currentLobbyData = (LobbyData) receivedMessage.getMessageData();
                             Platform.runLater(() -> SceneManager.changeScene(SceneType.GAME));
+                            break;
+                        case GAME_LOST:
+                            currentLobbyData = (LobbyData) receivedMessage.getMessageData();
+                            alert("Game result", "You have lost the game", Alert.AlertType.INFORMATION);
+                            Platform.runLater(SceneManager::goToPreviousSceneType);
+                            break;
+                        case GAME_WON:
+                            currentLobbyData = (LobbyData) receivedMessage.getMessageData();
+                            alert("Game result", "You have won the game", Alert.AlertType.INFORMATION);
+                            Platform.runLater(SceneManager::goToPreviousSceneType);
+                            break;
                         default:
                             break;
                     }
