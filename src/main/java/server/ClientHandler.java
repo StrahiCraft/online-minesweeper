@@ -315,6 +315,10 @@ public class ClientHandler extends Thread {
         }
     }
 
+    /**
+     * Signals to all clients in the current lobby that the game has been lost
+     * @param messageFromClient Message from the client, should contain current lobby data
+     */
     private void onGameLost(ServerMessage messageFromClient){
         LobbyData newLobbyData = (LobbyData) messageFromClient.getMessageData();
 
@@ -323,6 +327,10 @@ public class ClientHandler extends Thread {
         }
     }
 
+    /**
+     * Signals to all clients in the current lobby that the game has been won
+     * @param messageFromClient Message from the client, should contain current lobby data
+     */
     private void onGameWon(ServerMessage messageFromClient){
         LobbyData newLobbyData = (LobbyData) messageFromClient.getMessageData();
 
