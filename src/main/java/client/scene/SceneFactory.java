@@ -236,6 +236,8 @@ public class SceneFactory {
     public static Scene getHostScene() {
         VBox root = new VBox();
         LobbyData currentLobbyData = ClientApplication.getClientInstance().getCurrentLobbyData();
+        currentLobbyData.setMinefield(MineFieldGenerator.generateMinefield(new Vector2Int(currentLobbyData.getMinefieldWidth(),
+                currentLobbyData.getMinefieldHeight()), currentLobbyData.getMineCount()));
 
         Label title = new Label("Host Game");
 
