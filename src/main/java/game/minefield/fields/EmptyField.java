@@ -1,6 +1,7 @@
 package game.minefield.fields;
 
 import client.ClientApplication;
+import client_server_comunication.ServerMessageType;
 import utility.customTypes.Vector2Int;
 
 /**
@@ -38,7 +39,10 @@ public class EmptyField extends Field {
     protected void onFieldDiscovered() {
         fieldGraphics.getStyleClass().remove("undiscovered-field");
 
-        if(surroundingMinesCount == 0){
+        if(ClientApplication.getClientInstance().getCurrentLobbyData().getMinefield().minefieldCleared()){
+            ClientApplication.getClientInstance().sendMessage(ServerMessageType.GAME_WON, ClientApplication.getClientInstance().getCurrentLobbyData());
+        }
+        if(surroundingMinesCount == 0) {
             ClientApplication.getClientInstance().getCurrentLobbyData().getMinefield().discoverSurroundingFields(getPosition());
         }
     }

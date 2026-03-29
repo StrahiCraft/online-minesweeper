@@ -1,5 +1,7 @@
 package game.minefield;
 
+import client.ClientApplication;
+import game.minefield.fields.EmptyField;
 import game.minefield.fields.Field;
 import game.minefield.fields.Mine;
 import utility.customTypes.Vector2Int;
@@ -150,5 +152,18 @@ public class Minefield implements Serializable {
         if(minefield.containsKey(position.add(Vector2Int.right().add(Vector2Int.down())).toString())){
             minefield.get(position.add(Vector2Int.right().add(Vector2Int.down())).toString()).discoverField();
         }
+    }
+
+    public boolean minefieldCleared(){
+        int count = 0;
+        for(Field currentField : minefield.values()){
+            if(currentField.getClass() == EmptyField.class){
+                if(currentField.discovered()){
+                    count++;
+                }
+            }
+        }
+        return (dimensions.getX() * dimensions.getY() - count
+                - ClientApplication.getClientInstance().getCurrentLobbyData().getMineCount()) == 0;
     }
 }

@@ -82,7 +82,7 @@ public abstract class Field implements Serializable {
             return;
         }
 
-        if(!undiscovered){
+        if(discovered()){
             return;
         }
 
@@ -135,6 +135,10 @@ public abstract class Field implements Serializable {
     public Button getFieldGraphics(){
         setupFieldButton();
         return fieldGraphics;
+    }
+
+    public boolean discovered(){
+        return !undiscovered;
     }
 
     public Vector2Int getPosition() {
