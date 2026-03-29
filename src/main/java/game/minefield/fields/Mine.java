@@ -31,6 +31,9 @@ public class Mine extends Field{
         // TODO lose game
     }
 
+    /**
+     * Sets the discovered graphics of the mine if it is currently discovered
+     */
     @Override
     protected void setDiscoveredGraphics() {
         if(undiscovered){

@@ -15,7 +15,7 @@ public abstract class Field implements Serializable {
     /**
      * Position of the field.
      */
-    private Vector2Int position;
+    private final Vector2Int position;
 
     /**
      * Determines if the field is discovered
@@ -104,6 +104,9 @@ public abstract class Field implements Serializable {
         setMarkedGraphics();
     }
 
+    /**
+     * Sets the graphics of the field by checking if it is marked
+     */
     private void setMarkedGraphics(){
         if(marked){
             fieldGraphics.getStyleClass().add("marked-field");
@@ -120,6 +123,9 @@ public abstract class Field implements Serializable {
      */
     protected abstract void onFieldDiscovered();
 
+    /**
+     * Sets the discovered graphics of the empty field if it is currently discovered
+     */
     protected abstract void setDiscoveredGraphics();
 
     /**
@@ -134,6 +140,4 @@ public abstract class Field implements Serializable {
     public Vector2Int getPosition() {
         return position;
     }
-
-
 }

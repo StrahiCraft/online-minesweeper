@@ -86,14 +86,29 @@ public class ServerApplication {
         }
     }
 
+    /**
+     * Creates data for the lobby
+     * @param hostId UUID of the host
+     * @param hostName Name of the host
+     * @param lobbyName Name of the created lobby
+     */
     public static void createLobbyData(UUID hostId, String hostName, String lobbyName){
         lobbies.add(new LobbyData(hostId, hostName, lobbyName, 16, 16, 64));
     }
 
+    /**
+     * Deletes lobby data from the list of active lobbies
+     * @param lobbyName Lobby that is being deleted
+     */
     public static void deleteLobbyData(String lobbyName){
         lobbies.remove(getLobbyWithName(lobbyName));
     }
 
+    /**
+     * Returns the lobby with the given name from the list of active lobbies
+     * @param lobbyName Name of the lobby we ara trying to get
+     * @return The lobby data of the found lobby or null if no lobby is found
+     */
     public static LobbyData getLobbyWithName(String lobbyName){
         for(LobbyData lobby : lobbies){
             if(lobby.getLobbyName().equals(lobbyName)){
@@ -103,6 +118,11 @@ public class ServerApplication {
         return null;
     }
 
+    /**
+     * Returns the lobby with the given client id from the list of active lobbies
+     * @param clientId The id of the client we are trying to find in the lobbies
+     * @return The lobby data of the found lobby or null if no lobby is found
+     */
     public static LobbyData getLobbyWithClient(UUID clientId){
         for (LobbyData lobby : lobbies){
             if(lobby.containsPlayer(clientId)){
@@ -113,12 +133,21 @@ public class ServerApplication {
         return null;
     }
 
-    public static void onPlayerDisconnected(UUID playerId){
-        System.out.println("Player " + playerId + " has disconnected!");
-        connectedClients.get(playerId).interrupt();
-        connectedClients.remove(playerId);
+    /**
+     * Removes client data from the list of connected clients after the client disconnects
+     * @param clientId Id of the client that has just disconnected
+     */
+    public static void onClientDisconnected(UUID clientId){
+        System.out.println("Client " + clientId + " has disconnected!");
+        connectedClients.get(clientId).interrupt();
+        connectedClients.remove(clientId);
     }
 
+    /**
+     * Gets the handler of the client based on the clients UUID
+     * @param clientId The client id of the client we are getting the handler from
+     * @return The client handler with the given client id
+     */
     public static ClientHandler getClientHandler(UUID clientId){
         return connectedClients.get(clientId);
     }

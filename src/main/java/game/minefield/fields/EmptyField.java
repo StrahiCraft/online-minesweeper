@@ -43,6 +43,10 @@ public class EmptyField extends Field {
         }
     }
 
+    /**
+     * Sets the discovered graphics of the empty field if it is currently discovered. The graphics change depending on the count
+     * of surrounding mines to that field
+     */
     @Override
     protected void setDiscoveredGraphics() {
         if(undiscovered){

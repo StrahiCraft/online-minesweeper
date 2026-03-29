@@ -12,6 +12,9 @@ public class SceneManager {
      */
     private static Stage mainStage;
 
+    /**
+     * The type of the currently displayed scene
+     */
     private static SceneType currentSceneType;
 
     /**
@@ -42,10 +45,16 @@ public class SceneManager {
         }
     }
 
+    /**
+     * Refreshes the current scene, this is done by changing the scene to the current scene type
+     */
     public static void refreshCurrentScene(){
         changeScene(currentSceneType);
     }
 
+    /**
+     * Closes the application and
+     */
     public static void close(){
         ClientApplication.getClientInstance().onGameClosed();
         mainStage.close();

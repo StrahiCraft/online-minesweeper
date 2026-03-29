@@ -92,7 +92,7 @@ public class ClientHandler extends Thread {
                 ServerMessageType messageType = messageFromClient.getMessageType();
 
                 switch (messageType){
-                    case QUIT -> ServerApplication.onPlayerDisconnected(messageFromClient.getClientId());
+                    case QUIT -> ServerApplication.onClientDisconnected(messageFromClient.getClientId());
                     case REGISTER -> registerPlayer(messageFromClient);
                     case LOGIN -> loginPlayer(messageFromClient);
                     case LOG_OUT -> logOutPlayer(messageFromClient);

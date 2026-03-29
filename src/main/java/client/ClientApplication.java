@@ -2,10 +2,8 @@ package client;
 
 import client.scene.SceneFactory;
 import client.scene.SceneManager;
-import client.scene.SceneType;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import server.database.DatabaseManager;
 
 import java.io.IOException;
 

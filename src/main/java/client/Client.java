@@ -27,6 +27,9 @@ public class Client extends Thread {
      */
     private final int PORT = 25655;
 
+    /**
+     * The unique id every client is given by the server upon connecting
+     */
     private UUID clientId;
 
     /**
@@ -254,6 +257,9 @@ public class Client extends Thread {
         }
     }
 
+    /**
+     * Resets the lobby name to the default (player's lobby, where player is replaced with the current player's name)
+     */
     public void resetLobbyName(){
         currentLobbyName = playerName + "'s lobby";
     }

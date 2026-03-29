@@ -1,11 +1,19 @@
 package server;
 
-import javafx.scene.chart.PieChart;
 import server.database.DatabaseManager;
 
 import java.sql.ResultSet;
 
+/**
+ * Class for account validation
+ */
 public class AccountValidation {
+    /**
+     * Checks if the login information is valid
+     * @param username Username we are checking
+     * @param password Password we are checking
+     * @return True if the login is valid, and false if not
+     */
     public static boolean validLogin(String username, String password){
         String[] parameters = { username, password };
         ResultSet resultSet = DatabaseManager.executeQuery("SELECT * FROM player WHERE username = ? AND password = ?", parameters);
@@ -23,12 +31,22 @@ public class AccountValidation {
         return loginValid;
     }
 
+    /**
+     * Sets the given user to be either logged in or not based on the given value
+     * @param username Username we are setting to be logged in or not in the database
+     * @param value The value of logged in we are setting
+     */
     public static void setLoggedIn(String username, boolean value){
         String[] parameters = { username };
         int loggedInStatus = value? 1 : 0;
         DatabaseManager.executeUpdate("UPDATE player SET logged_in = " + loggedInStatus + " WHERE username = ?", parameters);
     }
 
+    /**
+     * Checks if the user isn't already logged in
+     * @param username Username of the account we are checking
+     * @return True if the user isn't already logged in, false if the user is logged in
+     */
     public static boolean notAlreadyLoggedIn(String username){
         String[] parameters = { username };
         ResultSet resultSet = DatabaseManager.executeQuery("SELECT * FROM player WHERE username = ?", parameters);
@@ -47,6 +65,12 @@ public class AccountValidation {
         return !alreadyLoggedIn;
     }
 
+    /**
+     * Checks if the registration is valid, it is if there is not a user with the given username in the database yet
+     * @param username Username of the account we are trying to create
+     * @param password Password of the account we are trying to create
+     * @return True if the user has been created successfully, false othervise
+     */
     public static boolean validRegistration(String username, String password){
         String[] parameters = { username };
         ResultSet resultSet = DatabaseManager.executeQuery("SELECT * FROM player WHERE username = ?", parameters);

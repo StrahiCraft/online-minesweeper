@@ -16,6 +16,9 @@ public class ServerMessage implements Serializable {
      */
     private ServerMessageType messageType;
 
+    /**
+     * Data the message is sending, can be any object
+     */
     private Object messageData;
 
     public ServerMessage(UUID clientId, ServerMessageType message, Object messageData) {

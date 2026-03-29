@@ -21,6 +21,11 @@ public class SceneFactory {
      */
     private static final Vector2Int resolution = new Vector2Int(1280, 720);
 
+    /**
+     * Creates an instance of the connection failed scene. This is the default scene and is changed to the login scene
+     * if the connection is successful, otherwise the game remains here
+     * @return An instance of the created scene
+     */
     public static Scene getConnectionFailedScene(){
         VBox root = new VBox();
 
@@ -42,8 +47,8 @@ public class SceneFactory {
     }
 
     /**
-     * Creates an instance of the login screen. This is the first scene loaded, the user can also choose to register if
-     * they don't have an account from here.
+     * Creates an instance of the login screen. This is the first scene loaded if the connection to the server is successful,
+     * the user can also choose to register if they don't have an account from here.
      * @return
      * An instance of the created scene
      */
@@ -373,6 +378,11 @@ public class SceneFactory {
         return scene;
     }
 
+    /**
+     * Creates an instance of the lobby scene, this is where you can see all the match's players and it's settings before
+     * it starts
+     * @return An instance of the created scene
+     */
     public static Scene getLobbyScene(){
         VBox root = new VBox();
         LobbyData currentLobbyData = ClientApplication.getClientInstance().getCurrentLobbyData();
