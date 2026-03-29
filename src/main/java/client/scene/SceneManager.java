@@ -46,6 +46,7 @@ public class SceneManager {
             case JOIN -> mainStage.setScene(SceneFactory.getJoinScene());
             case GAME -> mainStage.setScene(SceneFactory.getGameScene());
             case ACCOUNT -> mainStage.setScene(SceneFactory.getAccountScene());
+            case STATISTICS -> mainStage.setScene(SceneFactory.getStatisticsScene());
             default -> System.out.println("Scene doesn't exist!");
         }
     }

@@ -8,6 +8,7 @@ import client_server_comunication.ServerMessageType;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.sql.ResultSet;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -322,6 +323,8 @@ public class ClientHandler extends Thread {
     private void onGameLost(ServerMessage messageFromClient){
         LobbyData newLobbyData = (LobbyData) messageFromClient.getMessageData();
 
+        insertGameResult(newLobbyData, false);
+
         for(UUID clientId : newLobbyData.getClients()){
             ServerApplication.getClientHandler(clientId).sendMessage(ServerMessageType.GAME_LOST, newLobbyData);
         }
@@ -334,8 +337,56 @@ public class ClientHandler extends Thread {
     private void onGameWon(ServerMessage messageFromClient){
         LobbyData newLobbyData = (LobbyData) messageFromClient.getMessageData();
 
+        insertGameResult(newLobbyData, true);
+
         for(UUID clientId : newLobbyData.getClients()){
             ServerApplication.getClientHandler(clientId).sendMessage(ServerMessageType.GAME_WON, newLobbyData);
+        }
+    }
+
+    private void insertGameResult(LobbyData lobbyData, boolean won){
+        String[] parameters = { Integer.toString(lobbyData.getMinefieldWidth()), Integer.toString(lobbyData.getMinefieldHeight()),
+            Integer.toString(lobbyData.getMineCount()), won? "1" : "0"};
+        DatabaseManager.executeUpdate("INSERT INTO game (board_width, board_height, mine_count, game_won)" +
+                "VALUES (?, ?, ?, ?)", parameters);
+
+        ResultSet gameIndexResultSet = DatabaseManager.executeQuery("SELECT MAX(game_id) FROM game");
+
+        int gameIndex = -1;
+
+        try{
+            if(gameIndexResultSet.next()){
+                gameIndex = gameIndexResultSet.getInt("MAX(game_id)");
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+        if(gameIndex == -1){
+            System.out.println("Game not found");
+            return;
+        }
+
+        for (String username : lobbyData.getClientAccountNames()){
+            String[] usernameParameter = { username };
+            ResultSet usernameIndexResultSet = DatabaseManager.executeQuery("SELECT player_id FROM player WHERE username = ?", usernameParameter);
+
+            int playerIndex = -1;
+
+            try{
+                if(usernameIndexResultSet.next()){
+                    playerIndex = usernameIndexResultSet.getInt("player_id");
+                }
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+
+            if(playerIndex != -1) {
+                String[] gamePlayersParameters = { Integer.toString(playerIndex), Integer.toString(gameIndex) };
+                DatabaseManager.executeUpdate("INSERT INTO game_players (player_id, game_id) VALUES (?, ?)", gamePlayersParameters);
+            }
         }
     }
 }

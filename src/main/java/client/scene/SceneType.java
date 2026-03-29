@@ -12,4 +12,5 @@ public enum SceneType {
     JOIN,
     GAME,
     ACCOUNT,
+    STATISTICS,
 }

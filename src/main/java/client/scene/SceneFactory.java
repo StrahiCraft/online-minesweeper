@@ -175,7 +175,12 @@ public class SceneFactory {
         Button accountButton = new Button("Account");
         Button hostGameButton = new Button("Host Game");
         Button joinGameButton = new Button("Join Game");
+        Button statisticsButton = new Button("Statistics");
         Button quitGameButton = new Button("Quit Game");
+
+        statisticsButton.setOnMouseClicked(event -> {
+            SceneManager.changeScene(SceneType.STATISTICS);
+        });
 
         accountButton.setOnMouseClicked(event -> {
             SceneManager.changeScene(SceneType.ACCOUNT);
@@ -199,6 +204,25 @@ public class SceneFactory {
         scene.getStylesheets().add(SceneFactory.class.getResource("/style/style.css").toExternalForm());
 
         return scene;
+    }
+
+
+    public static Scene getStatisticsScene(){
+        VBox root = new VBox();
+
+        Label title = new Label("Statistics");
+
+        Button backButton = new Button("Back");
+
+        backButton.setOnMouseClicked(event -> {
+            SceneManager.changeScene(SceneType.MAIN_MENU);
+        });
+
+        root.getChildren().addAll(title, backButton);
+        root.setSpacing(10);
+        root.setAlignment(Pos.CENTER);
+
+        return new Scene(root, resolution.getX(), resolution.getY());
     }
 
     /**
