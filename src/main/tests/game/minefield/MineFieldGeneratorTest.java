@@ -1,7 +1,9 @@
 package game.minefield;
 
-import game.minefield.fields.Field;
-import game.minefield.fields.Mine;
+import client.minefield.MineFieldGenerator;
+import client.minefield.Minefield;
+import client.minefield.fields.Field;
+import client.minefield.fields.Mine;
 import javafx.application.Platform;
 import org.junit.jupiter.api.Test;
 import utility.customTypes.Vector2Int;

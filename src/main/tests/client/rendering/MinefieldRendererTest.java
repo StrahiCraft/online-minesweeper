@@ -1,7 +1,7 @@
 package client.rendering;
 
-import game.minefield.MineFieldGenerator;
-import game.minefield.Minefield;
+import client.minefield.MineFieldGenerator;
+import client.minefield.Minefield;
 import javafx.application.Platform;
 import javafx.scene.layout.GridPane;
 import org.junit.jupiter.api.Test;

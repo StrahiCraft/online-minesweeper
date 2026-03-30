@@ -1,8 +1,8 @@
-package game.minefield;
+package client.minefield;
 
-import game.minefield.fields.EmptyField;
-import game.minefield.fields.Field;
-import game.minefield.fields.Mine;
+import client.minefield.fields.EmptyField;
+import client.minefield.fields.Field;
+import client.minefield.fields.Mine;
 import utility.customTypes.Vector2Int;
 
 import java.util.HashMap;

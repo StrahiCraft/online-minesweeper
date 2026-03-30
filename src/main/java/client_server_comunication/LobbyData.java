@@ -1,6 +1,6 @@
 package client_server_comunication;
 
-import game.minefield.Minefield;
+import client.minefield.Minefield;
 
 import java.io.Serializable;
 import java.util.ArrayList;

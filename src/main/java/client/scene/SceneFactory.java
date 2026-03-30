@@ -4,7 +4,7 @@ import client.ClientApplication;
 import client.rendering.MinefieldRenderer;
 import client_server_comunication.GameStatistics;
 import client_server_comunication.LobbyData;
-import game.minefield.MineFieldGenerator;
+import client.minefield.MineFieldGenerator;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;

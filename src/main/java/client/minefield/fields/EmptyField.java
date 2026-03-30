@@ -1,4 +1,4 @@
-package game.minefield.fields;
+package client.minefield.fields;
 
 import client.ClientApplication;
 import client_server_comunication.ServerMessageType;
